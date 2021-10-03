@@ -1,0 +1,138 @@
+﻿#include <stdio.h>
+#include <stdbool.h>
+
+int numbersArrayInput(int array[], int count)
+{
+    for (int i = 0; i < count; i++)
+    {
+        int number = 0;
+        const int numberInput = scanf("%d", &number);
+        if (numberInput != 1)
+        {
+            return 1;
+        }
+        array[i] = number;
+    }
+    return 0;
+}
+
+void numbersArrayOutput(int array[], int count)
+{
+    for (int i = 0; i < count; i++)
+    {
+        printf("%d ", array[i]);
+    }
+    printf("\n");
+}
+
+int partitionFinding(int array[], int startPos, int endPos)
+{
+    const int pivot = array[(startPos + endPos) / 2];
+    const bool loop = true;
+    while (loop)
+    {
+        while (array[startPos] < pivot)
+        {
+            startPos++;
+        }
+        while (array[endPos] > pivot)
+        {
+            endPos--;
+        }
+        if (startPos >= endPos)
+        {
+            return endPos;
+        }
+        const int bufferValue = array[startPos];
+        array[startPos] = array[endPos];
+        array[endPos] = bufferValue;
+        startPos++;
+        endPos--;
+    }
+}
+
+void quickSorting(int array[], int startPos, int endPos)
+{
+    if (startPos < endPos)
+    {
+        const int partition = partitionFinding(array, startPos, endPos);
+        quickSorting(array, startPos, partition);
+        quickSorting(array, partition + 1, endPos);
+    }
+}
+
+int findMostFrequentElement(int array[], int length)
+{
+    quickSorting(array, 0, length - 1);
+    int mostFrequentElement = array[0];
+    int maxFrequence = 0;
+    int counter = 1;
+    for (int i = 1; i < length; i++)
+    {
+        if (array[i] == array[i - 1])
+        {
+            counter++;
+            if (counter > maxFrequence)
+            {
+                maxFrequence = counter;
+                mostFrequentElement = array[i - 1];
+            }
+        }
+        else
+        {
+            counter = 1;
+        }
+    }
+    return mostFrequentElement;
+}
+
+bool standardCase()
+{
+    int testedArray[8] = { 7, 1, 3, 1, 5, 3, 5, 5 };
+    return findMostFrequentElement(testedArray, 8) == 5;
+}
+
+bool oneElementArrayCase()
+{
+    int testedArray[1] = { 1 };
+    return findMostFrequentElement(testedArray, 1) == 1;
+}
+
+bool hugeSpreadOfValuesCase()
+{
+    int testedArray[5] = { -1000000, 2000000, 2000000, 0, 2000000 };
+    return findMostFrequentElement(testedArray, 5) == 2000000;
+}
+
+bool generalTest()
+{
+    return standardCase() && oneElementArrayCase() && hugeSpreadOfValuesCase();
+}
+
+int main()
+{
+    if (!generalTest())
+    {
+        printf("Tests Failed ...\n");
+        return 1;
+    }
+    printf("Enter count of elements: ");
+    int count = 0;
+    const int countInput = scanf("%d", &count);
+    if (countInput != 1)
+    {
+        printf("Ouch ...\n");
+        return 1;
+    }
+    printf("Enter elements of array:\n");
+    int* array = calloc(count, sizeof(int));
+    const int errorCode = numbersArrayInput(array, count);
+    if (errorCode != 0)
+    {
+        printf("Ouch ...\n");
+        return 1;
+    }
+
+    const int mostFrequentElement = findMostFrequentElement(array, count);
+    printf("Most frequent element in array is: %d\n", mostFrequentElement);
+}
