@@ -126,6 +126,11 @@ int main()
     }
     printf("Enter elements of array:\n");
     int* array = calloc(count, sizeof(int));
+    if (array == NULL)
+    {
+        printf("Something went wrong ...\n");
+        return 1;
+    }
     const int errorCode = numbersArrayInput(array, count);
     if (errorCode != 0)
     {
@@ -135,4 +140,6 @@ int main()
 
     const int mostFrequentElement = findMostFrequentElement(array, count);
     printf("Most frequent element in array is: %d\n", mostFrequentElement);
+
+    free(array);
 }
