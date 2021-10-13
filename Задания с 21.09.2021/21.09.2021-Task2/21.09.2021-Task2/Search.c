@@ -7,8 +7,7 @@
 int partitionFinding(int array[], int startPos, int endPos)
 {
     const int pivot = array[(startPos + endPos) / 2];
-    const bool loop = true;
-    while (loop)
+    while (true)
     {
         while (array[startPos] < pivot)
         {
@@ -44,10 +43,9 @@ int binarySearch(int requiredNumber, int array[], int length)
 {
     int low = 0;
     int high = length - 1;
-    int middle = 0;
     while (low <= high)
     {
-        middle = (low + high) / 2;
+        const int middle = (low + high) / 2;
         if (requiredNumber < array[middle])
         {
             high = middle - 1;
@@ -105,7 +103,7 @@ int main()
         printf("Tests Failed ...\n");
         return 1;
     }
-    srand(time(NULL));
+    srand((unsigned)time(NULL));
     printf("Enter count of numbers in array: ");
     int arrayLength = 0;
     const int arrayLengthInput = scanf("%d", &arrayLength);
@@ -147,4 +145,7 @@ int main()
             printf("Number %d not found\n", searchedNumbersArray[i]);
         }
     }
+
+    free(numbersArray);
+    free(searchedNumbersArray);
 }
