@@ -19,8 +19,7 @@ void insertionSort(int array[], int startPos, int endPos)
 int partitionFind(int array[], int startPos, int endPos)
 {
     const int pivot = array[(startPos + endPos) / 2];
-    const bool loop = true;
-    while (loop)
+    while (true)
     {
         while (array[startPos] < pivot)
         {
@@ -148,7 +147,7 @@ int main()
     printf("Enter numbers for array:\n");
     int array[100] = { 0 };
 
-    const int errorCode = arrayInput(array, count);
+    const int errorCode = numbersArrayInput(array, count);
     if (errorCode != 0)
     {
         printf("Something went wrong ...\n");
@@ -156,5 +155,5 @@ int main()
     }
     smartQuickSorting(array, 0, count - 1);
     printf("Quick sorted array: ");
-    arrayOutput(array, count);
+    numbersArrayOutput(array, count);
 }
