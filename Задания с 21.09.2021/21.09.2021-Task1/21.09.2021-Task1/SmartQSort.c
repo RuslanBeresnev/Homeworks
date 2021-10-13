@@ -1,7 +1,7 @@
 ﻿#include <stdio.h>
 #include <stdbool.h>
 
-void insertionSorting(int array[], int startPos, int endPos)
+void insertionSort(int array[], int startPos, int endPos)
 {
     for (int i = startPos; i <= endPos; i++)
     {
@@ -16,7 +16,7 @@ void insertionSorting(int array[], int startPos, int endPos)
     }
 }
 
-int partitionFinding(int array[], int startPos, int endPos)
+int partitionFind(int array[], int startPos, int endPos)
 {
     const int pivot = array[(startPos + endPos) / 2];
     const bool loop = true;
@@ -46,14 +46,12 @@ void smartQuickSorting(int array[], int startPos, int endPos)
 {
     if (endPos - startPos + 1 < 10)
     {
-        insertionSorting(array, startPos, endPos);
+        insertionSort(array, startPos, endPos);
+        return;
     }
-    else
-    {
-        const int partition = partitionFinding(array, startPos, endPos);
-        smartQuickSorting(array, startPos, partition);
-        smartQuickSorting(array, partition + 1, endPos);
-    }
+    const int partition = partitionFind(array, startPos, endPos);
+    smartQuickSorting(array, startPos, partition);
+    smartQuickSorting(array, partition + 1, endPos);
 }
 
 int numbersArrayInput(int array[], int count)
