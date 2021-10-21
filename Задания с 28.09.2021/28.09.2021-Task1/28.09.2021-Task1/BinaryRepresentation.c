@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include <math.h>
 
-#define INT_BITS_COUNT sizeof(int) * 8
+#define INT_BITS_COUNT (sizeof(int) * 8)
 
 #pragma warning (disable: 4774 5045 4996)
 
@@ -14,8 +14,8 @@ void bitwiseAddition(int firstNumber[], int secondNumber[], int resultNumber[])
     int position = INT_BITS_COUNT - 1;
     while (position >= 0)
     {
-        currentBitSum += (firstNumber[position] == 1) ? 1 : 0;
-        currentBitSum += (secondNumber[position] == 1) ? 1 : 0;
+        currentBitSum += firstNumber[position];
+        currentBitSum += secondNumber[position];
         resultNumber[position] = currentBitSum % 2;
         currentBitSum /= 2;
         position--;
@@ -112,12 +112,12 @@ int main(void)
     int secondNumberInBinary[INT_BITS_COUNT] = { 0 };
     convertToBinary(firstNumber, firstNumberInBinary);
     convertToBinary(secondNumber, secondNumberInBinary);
-    int sumOfTwonumbers[INT_BITS_COUNT] = { 0 };
-    bitwiseAddition(firstNumberInBinary, secondNumberInBinary, sumOfTwonumbers);
+    int sumOfTwoNumbers[INT_BITS_COUNT] = { 0 };
+    bitwiseAddition(firstNumberInBinary, secondNumberInBinary, sumOfTwoNumbers);
     printf("Сумма двух чисел в двоичном представлении: ");
-    printBinaryNumber(sumOfTwonumbers, INT_BITS_COUNT);
+    printBinaryNumber(sumOfTwoNumbers, INT_BITS_COUNT);
     printf("Сумма двух чисел в десятичном представлении: ");
-    const int sumInDecimal = convertToDecimal(sumOfTwonumbers, 32);
+    const int sumInDecimal = convertToDecimal(sumOfTwoNumbers, 32);
     printf("%d", sumInDecimal);
     printf("\n");
 }
