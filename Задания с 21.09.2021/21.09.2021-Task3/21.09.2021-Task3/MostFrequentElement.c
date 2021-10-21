@@ -1,5 +1,8 @@
 ﻿#include <stdio.h>
 #include <stdbool.h>
+#include <stdlib.h>
+
+#pragma warning (disable: 5045 4996)
 
 int numbersArrayInput(int array[], int count)
 {
@@ -28,8 +31,7 @@ void numbersArrayOutput(int array[], int count)
 int partitionFinding(int array[], int startPos, int endPos)
 {
     const int pivot = array[(startPos + endPos) / 2];
-    const bool loop = true;
-    while (loop)
+    while (true)
     {
         while (array[startPos] < pivot)
         {
@@ -86,30 +88,30 @@ int findMostFrequentElement(int array[], int length)
     return mostFrequentElement;
 }
 
-bool standardCase()
+bool standardCase(void)
 {
     int testedArray[8] = { 7, 1, 3, 1, 5, 3, 5, 5 };
     return findMostFrequentElement(testedArray, 8) == 5;
 }
 
-bool oneElementArrayCase()
+bool oneElementArrayCase(void)
 {
     int testedArray[1] = { 1 };
     return findMostFrequentElement(testedArray, 1) == 1;
 }
 
-bool hugeSpreadOfValuesCase()
+bool hugeSpreadOfValuesCase(void)
 {
     int testedArray[5] = { -1000000, 2000000, 2000000, 0, 2000000 };
     return findMostFrequentElement(testedArray, 5) == 2000000;
 }
 
-bool generalTest()
+bool generalTest(void)
 {
     return standardCase() && oneElementArrayCase() && hugeSpreadOfValuesCase();
 }
 
-int main()
+int main(void)
 {
     if (!generalTest())
     {
