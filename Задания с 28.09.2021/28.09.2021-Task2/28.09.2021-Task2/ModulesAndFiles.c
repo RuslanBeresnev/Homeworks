@@ -16,8 +16,8 @@ int readNumbersFromFile(const char fileName[], int array[])
     while (!feof(numbersFile))
     {
         int number = 0;
-        const int countOfReadedNumbers = fscanf(numbersFile, "%d", &number);
-        if (countOfReadedNumbers < 0)
+        const int countOfReadNumbers = fscanf(numbersFile, "%d", &number);
+        if (countOfReadNumbers < 0)
         {
             break;
         }

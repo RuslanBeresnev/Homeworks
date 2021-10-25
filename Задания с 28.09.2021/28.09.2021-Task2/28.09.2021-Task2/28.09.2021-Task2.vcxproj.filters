@@ -21,9 +21,15 @@
     <ClCompile Include="MostFrequentElement.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="QuickSorting.c">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MostFrequentElement.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="QuickSorting.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
