@@ -15,7 +15,7 @@ void push(StackElement** head, float number)
     StackElement* newStackElement = calloc(1, sizeof(StackElement));
     if (newStackElement == NULL)
     {
-        return NULL;
+        return;
     }
     newStackElement->value = number;
     newStackElement->next = *head;
