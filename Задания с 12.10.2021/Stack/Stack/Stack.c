@@ -10,7 +10,7 @@ typedef struct StackElement
     struct StackElement* next;
 }StackElement;
 
-void push(StackElement** head, int number)
+void push(StackElement** head, float number)
 {
     StackElement* newStackElement = calloc(1, sizeof(StackElement));
     if (newStackElement == NULL)
@@ -21,8 +21,7 @@ void push(StackElement** head, int number)
     newStackElement->next = *head;
     *head = newStackElement;
 }
-
-int pop(StackElement** head)
+float pop(StackElement** head)
 {
     if (*head == NULL || head == NULL)
     {
