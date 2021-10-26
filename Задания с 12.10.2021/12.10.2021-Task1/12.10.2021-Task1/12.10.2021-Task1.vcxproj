@@ -141,11 +141,9 @@
   <ItemGroup>
     <ClCompile Include="..\..\Stack\Stack\Stack.c" />
     <ClCompile Include="PostfixCalculator.c" />
-    <ClCompile Include="PostfixCalculatorTests.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Stack\Stack\Stack.h" />
-    <ClInclude Include="PostfixCalculatorTests.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

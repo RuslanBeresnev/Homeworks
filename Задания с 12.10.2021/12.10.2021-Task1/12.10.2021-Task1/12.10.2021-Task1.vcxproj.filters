@@ -21,15 +21,9 @@
     <ClCompile Include="..\..\Stack\Stack\Stack.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="PostfixCalculatorTests.c">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Stack\Stack\Stack.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
-    <ClInclude Include="PostfixCalculatorTests.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
