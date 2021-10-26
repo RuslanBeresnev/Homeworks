@@ -6,7 +6,7 @@
 
 typedef struct StackElement
 {
-    int value;
+    float value;
     struct StackElement* next;
 }StackElement;
 
