@@ -6,11 +6,11 @@
 
 typedef struct StackElement
 {
-    float value;
+    int value;
     struct StackElement* next;
 }StackElement;
 
-void push(StackElement** head, float number)
+void push(StackElement** head, int number)
 {
     StackElement* newStackElement = calloc(1, sizeof(StackElement));
     if (newStackElement == NULL)
@@ -21,14 +21,14 @@ void push(StackElement** head, float number)
     newStackElement->next = *head;
     *head = newStackElement;
 }
-float pop(StackElement** head)
+int pop(StackElement** head)
 {
     if (*head == NULL || head == NULL)
     {
         return 0;
     }
     StackElement* temporary = *head;
-    float value = temporary->value;
+    int value = temporary->value;
     *head = (*head)->next;
     free(temporary);
     return value;
