@@ -6,10 +6,10 @@
 typedef struct StackElement StackElement;
 
 // Добавляет элемент в стек
-void push(StackElement** head, int number);
+void push(StackElement** head, float number);
 
 // Удаляет верхний элемент из стека
-int pop(StackElement** head);
+float pop(StackElement** head);
 
 // Проверка стека на пустоту
 bool isEmpty(StackElement* head);
