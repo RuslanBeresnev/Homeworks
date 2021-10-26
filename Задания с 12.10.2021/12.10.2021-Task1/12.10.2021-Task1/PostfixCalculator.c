@@ -1,4 +1,4 @@
-﻿#pragma warning (disable: 4996)
+﻿#pragma warning (disable: 4996 4464)
 
 #include "../../Stack/Stack/Stack.h"
 
