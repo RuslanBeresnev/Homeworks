@@ -5,14 +5,6 @@
 #include <stdio.h>
 #include <locale.h>
 
-int addToInputTopElement(char sequence[], int currentPosition, StackElement* headOfStack)
-{
-    sequence[currentPosition] = (char)pop(&headOfStack);
-    sequence[currentPosition + 1] = ' ';
-    currentPosition += 2;
-    return currentPosition + 2;
-}
-
 void sortFacility(char sequence[], char toInput[])
 {
     StackElement* head = NULL;
@@ -30,7 +22,9 @@ void sortFacility(char sequence[], char toInput[])
         {
             if (sequence[sequencePosition] != ' ' && sequence[sequencePosition] != ')')
             {
-               toInputPosition = addToInputTopElement(toInput, toInputPosition, head);
+                toInput[toInputPosition] = sequence[sequencePosition];
+                toInput[toInputPosition + 1] = ' ';
+                toInputPosition += 2;
             }
         }
         if (sequence[sequencePosition] == '(')
@@ -39,20 +33,32 @@ void sortFacility(char sequence[], char toInput[])
         }
         else if (sequence[sequencePosition] == ')' && attachmentsCount > 0)
         {
-            char topElement = 0;
-            while (topElement != '(')
+            char topElement = (char)pop(&head);
+            while (topElement != '(' && topElement != 0)
             {
+                toInput[toInputPosition] = topElement;
+                toInput[toInputPosition + 1] = ' ';
+                toInputPosition += 2;
                 topElement = (char)pop(&head);
-                toInputPosition = addToInputTopElement(toInput, toInputPosition, head);
+            }
+            if (!isEmpty(head))
+            {
+                toInput[toInputPosition] = (char)pop(&head);
+                toInput[toInputPosition + 1] = ' ';
+                toInputPosition += 2;
             }
             attachmentsCount--;
-            toInputPosition = addToInputTopElement(toInput, toInputPosition, head);
         }
         sequencePosition++;
     }
-    while (!isEmpty(head))
+    if (attachmentsCount == 0)
     {
-        toInputPosition = addToInputTopElement(toInput, toInputPosition, head);
+        while (!isEmpty(head))
+        {
+            toInput[toInputPosition] = (char)pop(&head);
+            toInput[toInputPosition + 1] = ' ';
+            toInputPosition += 2;
+        }
     }
 }
 
