@@ -28,7 +28,7 @@ float pop(StackElement** head)
         return 0;
     }
     StackElement* temporary = *head;
-    int value = temporary->value;
+    float value = temporary->value;
     *head = (*head)->next;
     free(temporary);
     return value;
