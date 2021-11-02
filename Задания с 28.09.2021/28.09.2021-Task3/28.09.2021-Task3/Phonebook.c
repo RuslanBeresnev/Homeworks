@@ -1,9 +1,9 @@
-﻿#include <stdio.h>
+﻿#pragma warning (disable: 4996 5045 4668 4710 6031)
+
+#include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
 #include <locale.h>
-
-#pragma warning (disable: 4996 5045 6001 4090 6385 6386 4189)
 
 typedef struct
 {
@@ -11,68 +11,41 @@ typedef struct
     char phoneNumber[30];
 } Note;
 
-int initializeMemory(Note phoneBook[], char fileName[])
+int initializeMemory(Note phoneBook[], const char fileName[])
 {
     FILE* database = fopen(fileName, "r");
     if (database == NULL)
     {
         database = fopen(fileName, "w");
+        fclose(database);
         return 0;
     }
     int notesRead = 0;
-    int position = 0;
-    bool nameReaded = false;
-    Note note;
     while (!feof(database))
     {
-        if (!nameReaded)
+        Note note = { 0 };
+        fscanf(database, "%s%s", note.name, note.phoneNumber);
+        if (note.name[0] == 0)
         {
-            const int charReading = fscanf(database, "%c", &note.name[position]);
-            if (charReading < 0)
-            {
-                fclose(database);
-                return notesRead;
-            }
+            break;
         }
-        else
+        int position = 0;
+        while (note.name[position] != ':')
         {
-            const int charReading = fscanf(database, "%c", &note.phoneNumber[position]);
-            if (charReading < 0)
-            {
-                fclose(database);
-                note.phoneNumber[position] = '\0';
-                phoneBook[notesRead] = note;
-                notesRead++;
-                return notesRead;
-            }
+            position++;
         }
-        if (note.name[position] == ':')
-        {
-            nameReaded = true;
-            note.name[position] = '\0';
-            position = -1;
-            char backspace = '0';
-            const int backspaceReading = fscanf(database, "%c", &backspace);
-        }
-        if (note.phoneNumber[position] == '\n')
-        {
-            nameReaded = false;
-            note.phoneNumber[position] = '\0';
-            phoneBook[notesRead] = note;
-            position = -1;
-            notesRead++;
-        }
-        position++;
+        note.name[position] = 0;
+        phoneBook[notesRead] = note;
+        notesRead++;
     }
+    fclose(database);
     return notesRead;
 }
 
 void addNote(const char name[], const char phoneNumber[], Note phoneBook[], const int currentIndex)
 {
-    Note note;
-    strcpy(note.name, name);
-    strcpy(note.phoneNumber, phoneNumber);
-    phoneBook[currentIndex] = note;
+    strcpy(phoneBook[currentIndex].name, name);
+    strcpy(phoneBook[currentIndex].phoneNumber, phoneNumber);
 }
 
 void printAllNotes(const Note phoneBook[], const int length)
@@ -107,14 +80,14 @@ void findName(const char phoneNumber[], char name[], const Note phoneBook[], con
     }
 }
 
-int saveData(const Note phoneBook[], const int length)
+int saveData(const char fileName[], const Note phoneBook[], const int notesCount)
 {
-    FILE* database = fopen("Database.txt", "w");
+    FILE* database = fopen(fileName, "w");
     if (database == NULL)
     {
         return 1;
     }
-    for (int i = 0; i < length; i++)
+    for (int i = 0; i < notesCount; i++)
     {
         fprintf(database, "%s: ", phoneBook[i].name);
         fprintf(database, "%s\n", phoneBook[i].phoneNumber);
@@ -123,14 +96,50 @@ int saveData(const Note phoneBook[], const int length)
     return 0;
 }
 
+void readLineWithoutLineBreak(char line[], int maxLength)
+{
+    fgets(line, maxLength, stdin);
+    int counter = 0;
+    while (line[counter] != '\n')
+    {
+        counter++;
+    }
+    line[counter] = '\0';
+}
+
+void clearFile(const char fileName[])
+{
+    FILE* file = fopen(fileName, "w");
+    fclose(file);
+}
+
+bool saveDataTestPassed(void)
+{
+    Note phoneBook[100] = { 0 };
+    addNote("RazbeR", "+7??????????", phoneBook, 0);
+    addNote("RRB3", "+7??????????", phoneBook, 1);
+    saveData("Test Database.txt", phoneBook, 2);
+    initializeMemory(phoneBook, "Test Database.txt");
+    return strcmp(phoneBook[0].name, "RazbeR") == 0 && strcmp(phoneBook[0].phoneNumber, "+7??????????") == 0 &&
+        strcmp(phoneBook[1].name, "RRB3") == 0 && strcmp(phoneBook[1].phoneNumber, "+7??????????") == 0;
+}
+
+bool addNoteTestPassed(void)
+{
+    Note phoneBook[100] = { 0 };
+    addNote("Vanya Akakievich", "+79876543210", phoneBook, 0);
+    addNote("Petr Gvidonovich", "+71234872092", phoneBook, 1);
+    return strcmp(phoneBook[0].name, "Vanya Akakievich") == 0 && strcmp(phoneBook[0].phoneNumber, "+79876543210") == 0 &&
+        strcmp(phoneBook[1].name, "Petr Gvidonovich") == 0 && strcmp(phoneBook[1].phoneNumber, "+71234872092") == 0;
+}
+
 bool findPhoneNumberTestPassed(void)
 {
     Note phoneBook[100] = { 0 };
     const int length = initializeMemory(phoneBook, "Test Database.txt");
     char phoneNumber[30] = { 0 };
-    findPhoneNumber("Петя", phoneNumber, phoneBook, length);
-    const char correctPhoneNumber[13] = "+78995677430";
-    return strcmp(phoneNumber, correctPhoneNumber) == 0;
+    findPhoneNumber("RazbeR", phoneNumber, phoneBook, length);
+    return strcmp(phoneNumber, "+7??????????") == 0;
 }
 
 bool findNameTestPassed(void)
@@ -138,23 +147,24 @@ bool findNameTestPassed(void)
     Note phoneBook[100] = { 0 };
     const int length = initializeMemory(phoneBook, "Test Database.txt");
     char name[50] = { 0 };
-    findName("+78995677430", name, phoneBook, length);
-    const char correctName[5] = "Петя";
-    return strcmp(name, correctName) == 0;
+    findName("+7??????????", name, phoneBook, length);
+    return strcmp(name, "RazbeR") == 0;
 }
 
 bool generalTestPassed(void)
 {
-    return findPhoneNumberTestPassed() && findNameTestPassed();
+    return saveDataTestPassed() && findPhoneNumberTestPassed() && findNameTestPassed() && addNoteTestPassed();
 }
 
 int main(void)
 {
+    clearFile("Test Database.txt");
     if (!generalTestPassed())
     {
         printf("Tests Failed ...\n");
         return 1;
     }
+
     setlocale(LC_ALL, "Russian");
     Note phoneBook[100] = { 0 };
     int notesCount = initializeMemory(phoneBook, "Database.txt");
@@ -176,7 +186,7 @@ int main(void)
         while (getchar() != '\n');
         if (commandInput != 1)
         {
-            printf("Кажется, вы не ввели недопустимые данные, поэтому программа завершает работу ...\n");
+            printf("Кажется, вы ввели недопустимые данные, поэтому программа завершает работу ...\n");
             return 1;
         }
 
@@ -194,23 +204,10 @@ int main(void)
             {
                 printf("Введите имя пользователя на английском языке:\n");
                 char name[50] = { 0 };
-                fgets(name, 50, stdin);
-                int counter = 0;
-                while (name[counter] != '\n')
-                {
-                    counter++;
-                }
-                name[counter] = '\0';
-
+                readLineWithoutLineBreak(name, 50);
                 printf("Введите номер телефона:\n");
                 char phoneNumber[30] = { 0 };
-                fgets(phoneNumber, 30, stdin);
-                counter = 0;
-                while (phoneNumber[counter] != '\n')
-                {
-                    counter++;
-                }
-                phoneNumber[counter] = '\0';
+                readLineWithoutLineBreak(phoneNumber, 30);
 
                 addNote(name, phoneNumber, phoneBook, notesCountBeforeSaving);
                 notesCountBeforeSaving++;
@@ -233,14 +230,7 @@ int main(void)
         {
             printf("Введите имя пользователя:\n");
             char name[50] = { 0 };
-            fgets(name, 50, stdin);
-            int counter = 0;
-            while (name[counter] != '\n')
-            {
-                counter++;
-            }
-            name[counter] = '\0';
-
+            readLineWithoutLineBreak(name, 50);
             char phoneNumber[30] = { 0 };
             findPhoneNumber(name, phoneNumber, phoneBook, notesCountBeforeSaving);
             if (phoneNumber[0] == 0)
@@ -255,15 +245,8 @@ int main(void)
         else if (selectedCommand == 4)
         {
             printf("Введите номер телефона:\n");
-            char phoneNumber[50] = { 0 };
-            fgets(phoneNumber, 50, stdin);
-            int counter = 0;
-            while (phoneNumber[counter] != '\n')
-            {
-                counter++;
-            }
-            phoneNumber[counter] = '\0';
-
+            char phoneNumber[30] = { 0 };
+            readLineWithoutLineBreak(phoneNumber, 30);
             char name[50] = { 0 };
             findName(phoneNumber, name, phoneBook, notesCountBeforeSaving);
             if (name[0] == 0)
@@ -277,7 +260,7 @@ int main(void)
         }
         else if (selectedCommand == 5)
         {
-            const int errorCode = saveData(phoneBook, notesCountBeforeSaving);
+            const int errorCode = saveData("Database.txt", phoneBook, notesCountBeforeSaving);
             if (errorCode != 0)
             {
                 printf("Что-то пошло не так ...\n");
@@ -287,5 +270,4 @@ int main(void)
             printf("Данные сохранены\n");
         }
     }
-    return 0;
 }
