@@ -34,3 +34,6 @@ bool last(Position* position);
 
 // Получение значения элемента
 int get(Position* position);
+
+// Удаление элемента списка после данной позиции (возвращает true, если удаление произошло, иначе false)
+bool deleteElementAfterPosition(Position* position);

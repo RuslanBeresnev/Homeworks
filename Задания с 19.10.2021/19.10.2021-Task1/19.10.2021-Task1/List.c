@@ -80,6 +80,24 @@ void addAfter(Position* position, int value)
     position->position->next = newElement;
 }
 
+bool deleteElementAfterPosition(Position* position)
+{
+    if (last(position))
+    {
+        return false;
+    }
+    else if (position->position->next)
+    {
+        ListElement* elementForDelete = position->position->next;
+        position->position->next = position->position->next->next;
+        free(elementForDelete);
+        return true;
+    }
+    free(position->position);
+    deletePosition(position); 
+    return true;
+}
+
 int get(Position* position)
 {
     return position->position->value;
