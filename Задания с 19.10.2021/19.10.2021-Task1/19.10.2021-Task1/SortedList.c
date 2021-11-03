@@ -14,6 +14,12 @@ void addNumberToList(List* list, const int number)
         addToStart(list, number);
         return;
     }
+    if (get(position) >= number)
+    {
+        addToStart(list, number);
+        deletePosition(position);
+        return;
+    }
     while (!(last(next(position))) && get(next(position)) < number)
     {
         position = next(position);
@@ -24,6 +30,10 @@ void addNumberToList(List* list, const int number)
 
 bool removeNumberFromList(List* list, const int index)
 {
+    if (index == 0)
+    {
+        return deleteFirstElement(list);
+    }
     Position* position = first(list);
     for (int i = 0; i < index - 1; i++)
     {

@@ -17,11 +17,11 @@ void deleteList(List* list);
 // Удаление позиции
 void deletePosition(Position* position);
 
+// Добавление элемента после элемента с данной позицией; применяется ко всем элементам, кроме первого
+void addAfter(Position* position, int value);
+
 // Добавление элемента в самое начало списка (перед текущим верхним элементом)
 void addToStart(List* list, int value);
-
-// Добавление элемента после элемента с данной позицией
-void addAfter(Position* position, int value);
 
 // Позиция первого элемента (самого верхнего)
 Position* first(List* list);
@@ -35,5 +35,8 @@ bool last(Position* position);
 // Получение значения элемента
 int get(Position* position);
 
-// Удаление элемента списка после данной позиции (возвращает true, если удаление произошло, иначе false)
+// Удаление элемента списка после данной позиции; применяется ко всем элементам, кроме первого (возвращает true, если удаление произошло, иначе false)
 bool deleteElementAfterPosition(Position* position);
+
+// Удаление первого элемента списка (возвращает true, если удаление произошло, иначе false)
+bool deleteFirstElement(List* list);

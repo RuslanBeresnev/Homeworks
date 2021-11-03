@@ -55,6 +55,11 @@ bool last(Position* position)
 
 Position* next(Position* position)
 {
+    if (last(position))
+    {
+        position->position = NULL;
+        return position;
+    }
     Position* newPosition = malloc(sizeof(Position));
     newPosition->position = position->position->next;
     return newPosition;
@@ -82,20 +87,26 @@ void addAfter(Position* position, int value)
 
 bool deleteElementAfterPosition(Position* position)
 {
-    if (last(position))
+    if (last(position) || next(position)->position == NULL)
     {
         return false;
     }
-    else if (position->position->next)
+    ListElement* elementForDelete = position->position->next;
+    position->position->next = position->position->next->next;
+    free(elementForDelete);
+    return true;
+}
+
+bool deleteFirstElement(List* list)
+{
+    if (list->head != NULL)
     {
-        ListElement* elementForDelete = position->position->next;
-        position->position->next = position->position->next->next;
-        free(elementForDelete);
+        ListElement* firstElement = list->head;
+        list->head = list->head->next;
+        free(firstElement);
         return true;
     }
-    free(position->position);
-    deletePosition(position); 
-    return true;
+    return false;
 }
 
 int get(Position* position)
