@@ -5,7 +5,6 @@
 #include <stdio.h>
 #include <locale.h>
 #include <string.h>
-#include "MergeSort.h"
 
 typedef struct Note
 {
