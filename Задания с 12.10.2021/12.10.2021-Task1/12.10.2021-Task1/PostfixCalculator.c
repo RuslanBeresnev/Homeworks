@@ -15,8 +15,20 @@ int postfixCalculator(char sequence[])
     {
         if (sequence[position] == '+' || sequence[position] == '-' || sequence[position] == '*' || sequence[position] == '/')
         {
-            secondNumber = pop(&head);
-            firstNumber = pop(&head);
+            bool correctWorking = true;
+            secondNumber = pop(&head, &correctWorking);
+            if (!correctWorking)
+            {
+                position++;
+                continue;
+            }
+            correctWorking = true;
+            firstNumber = pop(&head, &correctWorking);
+            if (!correctWorking)
+            {
+                position++;
+                continue;
+            }
         }
         switch (sequence[position])
         {
@@ -41,7 +53,14 @@ int postfixCalculator(char sequence[])
         }
         position++;
     }
-    return pop(&head);
+    bool correctWorking = true;
+    const int result = pop(&head, &correctWorking);
+    if (correctWorking)
+    {
+        return result;
+    }
+    deleteStack(&head);
+    return 0;
 }
 
 bool standardSequenceTestPassed(void)

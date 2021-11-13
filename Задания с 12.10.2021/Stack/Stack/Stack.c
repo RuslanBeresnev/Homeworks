@@ -35,7 +35,7 @@ int pop(StackElement** head, bool* correctWorking)
     int value = temporary->value;
     *head = (*head)->next;
     free(temporary);
-    *correctWorking == true;
+    *correctWorking = true;
     return value;
 }
 
@@ -48,6 +48,11 @@ void deleteStack(StackElement** head)
 {
     while (!isEmpty(*head))
     {
-        pop(head);
+        bool correctWorking = true;
+        pop(head, &correctWorking);
+        if (!correctWorking)
+        {
+            return;
+        }
     }
 }
