@@ -5,10 +5,10 @@
 // Элемент стека
 typedef struct StackElement StackElement;
 
-// Добавляет элемент в стек
-void push(StackElement** head, int number);
+// Добавляет элемент в стек и возвращает код ошибки
+int push(StackElement** head, int number);
 
-// Удаляет верхний элемент из стека
+// Удаляет верхний элемент из стека и возвращает его значение
 int pop(StackElement** head);
 
 // Проверка стека на пустоту
