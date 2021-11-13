@@ -8,7 +8,6 @@ bool notEmptyStackTestPassed(void);
 // Проверяет работу функции pop() на пустом стеке
 bool emptyStackTestPassed(void);
 
-
 // Проверяет работу функции isEmpty()
 bool isEmptyFunctionTestPassed(void);
 
