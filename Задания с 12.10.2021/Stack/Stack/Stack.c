@@ -24,16 +24,18 @@ int push(StackElement** head, int number)
     return 0;
 }
 
-int pop(StackElement** head)
+int pop(StackElement** head, bool* correctWorking)
 {
     if (head == NULL || *head == NULL)
     {
-        return NULL;
+        *correctWorking = false;
+        return 0;
     }
     StackElement* temporary = *head;
     int value = temporary->value;
     *head = (*head)->next;
     free(temporary);
+    *correctWorking == true;
     return value;
 }
 
