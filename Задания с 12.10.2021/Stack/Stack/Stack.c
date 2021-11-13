@@ -1,6 +1,7 @@
-﻿#include "Stack.h"
+﻿#pragma warning (disable: 4047)
 
-#include <stdio.h>
+#include "Stack.h"
+
 #include <stdbool.h>
 #include <stdlib.h>
 
@@ -8,24 +9,26 @@ typedef struct StackElement
 {
     int value;
     struct StackElement* next;
-}StackElement;
+} StackElement;
 
-void push(StackElement** head, int number)
+int push(StackElement** head, int number)
 {
     StackElement* newStackElement = calloc(1, sizeof(StackElement));
     if (newStackElement == NULL)
     {
-        return;
+        return 1;
     }
     newStackElement->value = number;
     newStackElement->next = *head;
     *head = newStackElement;
+    return 0;
 }
+
 int pop(StackElement** head)
 {
-    if (*head == NULL || head == NULL)
+    if (head == NULL || *head == NULL)
     {
-        return 0;
+        return NULL;
     }
     StackElement* temporary = *head;
     int value = temporary->value;
