@@ -18,7 +18,12 @@ bool notEmptyStackTestPassed(void)
     int numbers[10] = { 0 };
     for (int i = 0; i < 10; i++)
     {
-        numbers[9 - i] = pop(&head);
+        bool correctWorking = true;
+        numbers[9 - i] = pop(&head, &correctWorking);
+        if (correctWorking == false)
+        {
+            return false;
+        }
     }
     deleteStack(&head);
     for (int i = 0; i < 10; i++)
@@ -34,7 +39,9 @@ bool notEmptyStackTestPassed(void)
 bool emptyStackTestPassed(void)
 {
     StackElement* head = NULL;
-    return pop(&head) == 0;
+    bool correctWorking = true;
+    pop(&head, &correctWorking);
+    return !correctWorking;
 }
 
 bool isEmptyFunctionTestPassed(void)

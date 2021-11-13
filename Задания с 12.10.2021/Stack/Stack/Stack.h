@@ -9,7 +9,7 @@ typedef struct StackElement StackElement;
 int push(StackElement** head, int number);
 
 // Удаляет верхний элемент из стека и возвращает его значение
-int pop(StackElement** head);
+int pop(StackElement** head, bool* correctWorking);
 
 // Проверка стека на пустоту
 bool isEmpty(StackElement* head);
