@@ -17,17 +17,20 @@ void deleteList(List* list);
 // Удаление позиции
 void deletePosition(Position* position);
 
+// Копирование текущей позиции
+Position* copyPosition(Position* position);
+
 // Добавление элемента после элемента с данной позицией; применяется ко всем элементам, кроме первого
 void addAfter(Position* position, int value);
 
 // Добавление элемента в самое начало списка (перед текущим верхним элементом)
-void addToStart(List* list, int value);
+void addToFront(List* list, int value);
 
 // Позиция первого элемента (самого верхнего)
 Position* first(List* list);
 
 // Перемещение позиции к следующему элементу
-Position* next(Position* position);
+void next(Position* position);
 
 // Проверка на последний элемент в списке
 bool last(Position* position);

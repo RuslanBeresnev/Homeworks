@@ -24,6 +24,13 @@ void deletePosition(Position* position)
     free(position);
 }
 
+Position* copyPosition(Position* position)
+{
+    Position* copyOfPosition = calloc(1, sizeof(Position));
+    copyOfPosition->position = position->position;
+    return copyOfPosition;
+}
+
 List* createList(void)
 {
     return calloc(1, sizeof(List));
@@ -53,19 +60,15 @@ bool last(Position* position)
     return position->position == NULL;
 }
 
-Position* next(Position* position)
+void next(Position* position)
 {
-    if (last(position))
+    if (!last(position))
     {
-        position->position = NULL;
-        return position;
+        position->position = position->position->next;
     }
-    Position* newPosition = malloc(sizeof(Position));
-    newPosition->position = position->position->next;
-    return newPosition;
 }
 
-void addToStart(List* list, int value)
+void addToFront(List* list, int value)
 {
     ListElement* newElement = calloc(1, sizeof(ListElement));
     newElement->value = value;
@@ -75,19 +78,19 @@ void addToStart(List* list, int value)
 
 void addAfter(Position* position, int value)
 {
-    ListElement* newElement = calloc(1, sizeof(ListElement));
-    newElement->value = value;
     if (last(position))
     {
         return;
     }
+    ListElement* newElement = calloc(1, sizeof(ListElement));
+    newElement->value = value;
     newElement->next = position->position->next;
     position->position->next = newElement;
 }
 
 bool deleteElementAfterPosition(Position* position)
 {
-    if (last(position) || next(position)->position == NULL)
+    if (last(position) || position->position->next == NULL)
     {
         return false;
     }

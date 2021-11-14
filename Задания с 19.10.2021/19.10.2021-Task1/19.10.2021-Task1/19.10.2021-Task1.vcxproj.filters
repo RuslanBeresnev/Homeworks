@@ -21,9 +21,15 @@
     <ClCompile Include="List.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="Task.c">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="List.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="SortedList.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
