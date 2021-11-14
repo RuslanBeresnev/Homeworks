@@ -20,7 +20,7 @@ bool notEmptyStackTestPassed(void)
     {
         bool correctWorking = true;
         numbers[9 - i] = pop(&head, &correctWorking);
-        if (correctWorking == false)
+        if (!correctWorking)
         {
             return false;
         }
@@ -42,6 +42,15 @@ bool emptyStackTestPassed(void)
     bool correctWorking = true;
     pop(&head, &correctWorking);
     return !correctWorking;
+}
+
+bool topFunctionTestPassed(void)
+{
+    StackElement* head = NULL;
+    push(&head, 1);
+    push(&head, 2);
+    bool correctWorking = true;
+    return top(&head, &correctWorking) == 2;
 }
 
 bool isEmptyFunctionTestPassed(void)
@@ -73,5 +82,6 @@ bool deleteStackFunctionTestPassed(void)
 
 bool generalTest(void)
 {
-    return notEmptyStackTestPassed() && emptyStackTestPassed() && isEmptyFunctionTestPassed() && deleteStackFunctionTestPassed();
+    return notEmptyStackTestPassed() && emptyStackTestPassed() && isEmptyFunctionTestPassed()
+        && deleteStackFunctionTestPassed() && topFunctionTestPassed();
 }
