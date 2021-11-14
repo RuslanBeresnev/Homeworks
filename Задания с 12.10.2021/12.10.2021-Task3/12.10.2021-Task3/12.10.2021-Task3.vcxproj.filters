@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="SortFacility.c">
+    <ClCompile Include="ShuntingYard.c">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Stack\Stack\Stack.c">
