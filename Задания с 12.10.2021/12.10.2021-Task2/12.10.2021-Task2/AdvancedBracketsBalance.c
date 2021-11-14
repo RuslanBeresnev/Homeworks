@@ -6,7 +6,7 @@
 #include <stdbool.h>
 #include <locale.h>
 
-bool checkBracketsBalance(char sequence[])
+bool checkBracketsBalance(const char sequence[])
 {
     StackElement* head = NULL;
     int position = 0;
@@ -15,25 +15,33 @@ bool checkBracketsBalance(char sequence[])
     {
         if (sequence[position] == ')' || sequence[position] == ']' || sequence[position] == '}')
         {
-            topElement = (char)pop(&head);
+            bool correctWorking = true;
+            topElement = (char)pop(&head, &correctWorking);
+            if (!correctWorking)
+            {
+                return false;
+            }
         }
         switch (sequence[position])
         {
         case ')':
             if (topElement != '(')
             {
+                deleteStack(&head);
                 return false;
             }
             break;
         case ']':
             if (topElement != '[')
             {
+                deleteStack(&head);
                 return false;
             }
             break;
         case '}':
             if (topElement != '{')
             {
+                deleteStack(&head);
                 return false;
             }
             break;
@@ -43,15 +51,52 @@ bool checkBracketsBalance(char sequence[])
         }
         position++;
     }
-    if (!isEmpty(head))
-    {
-        return false;
-    }
-    return true;
+    return isEmpty(head);
+}
+
+bool correctSequenceTestPassed(void)
+{
+    return checkBracketsBalance("[({([{}])})]");
+}
+
+bool wrongSequenceTestPassed(void)
+{
+    return !checkBracketsBalance("{[({)}])");
+}
+
+bool leftAntisymmetricSequenceTestPassed(void)
+{
+    return !checkBracketsBalance("(((((((((((((())))");
+}
+
+bool rightAntisymmetricSequenceTestPassed(void)
+{
+    return !checkBracketsBalance("((()))))))))))))))");
+}
+
+bool negativeSequenceTestPassed(void)
+{
+    return !checkBracketsBalance("}])([{");
+}
+
+bool oneElementSequenceTestPassed(void)
+{
+    return !checkBracketsBalance("(");
+}
+
+bool generalTestPassed(void)
+{
+    return correctSequenceTestPassed() && wrongSequenceTestPassed() && leftAntisymmetricSequenceTestPassed()
+        && rightAntisymmetricSequenceTestPassed() && negativeSequenceTestPassed() && oneElementSequenceTestPassed();
 }
 
 int main(void)
 {
+    if (!generalTestPassed())
+    {
+        printf("Tests Failed ...\n");
+        return 1;
+    }
     setlocale(LC_ALL, "Russian");
     printf("Введите скобочную последовательность:\n");
     char sequence[100] = { 0 };
@@ -61,7 +106,7 @@ int main(void)
         printf("Введены некорректные данные ...\n");
         return 1;
     }
-    bool verdict = checkBracketsBalance(sequence);
+    const bool verdict = checkBracketsBalance(sequence);
     if (verdict)
     {
         printf("Это правильная скобочная последовательность }])\n");
