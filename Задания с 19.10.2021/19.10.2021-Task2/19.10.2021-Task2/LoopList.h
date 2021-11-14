@@ -20,8 +20,11 @@ bool oneElementLoopList(List* list);
 // Удаление позиции
 void deletePosition(Position* position);
 
+// Возвращает копию позиции
+Position* copyPosition(Position* position);
+
 // Добавление элемента после элемента с данной позицией
-void addAfter(Position* position);
+void addAfter(List* list, Position* position);
 
 // Возврашает позицию первого элемента
 Position* getFirstElement(List* list);
@@ -30,7 +33,7 @@ Position* getFirstElement(List* list);
 Position* getLastElement(List* list);
 
 // Возвращает копию позиции следующего элемента
-Position* next(Position* position);
+void next(Position* position);
 
 // Проверка на последний элемент в циклическом списке
 bool isLast(List* list, Position* position);

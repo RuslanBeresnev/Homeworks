@@ -22,15 +22,19 @@ typedef struct Position
 List* createLoopList(void)
 {
     List* newLoopList = calloc(1, sizeof(List));
-    newLoopList->head = calloc(1, sizeof(ListElement));
-    newLoopList->head->number = 1;
-    newLoopList->head->next = newLoopList->head;
     return newLoopList;
 }
 
 void deletePosition(Position* position)
 {
     free(position);
+}
+
+Position* copyPosition(Position* position)
+{
+    Position* copyOfPosition = calloc(1, sizeof(Position));
+    copyOfPosition->position = position->position;
+    return copyOfPosition;
 }
 
 Position* getFirstElement(List* list)
@@ -46,16 +50,17 @@ Position* getLastElement(List* list)
     currentPosition->position = list->head;
     while (currentPosition->position->next != list->head)
     {
-        Position* currentPositionCopy = currentPosition;
-        currentPosition = next(currentPosition);
-        deletePosition(currentPositionCopy);
+        next(currentPosition);
     }
     return currentPosition;
 }
 
 bool isLast(List* list, Position* position)
 {
-    return position->position == getLastElement(list)->position;
+    Position* lastElement = getLastElement(list);
+    bool verdict = position->position == lastElement->position;
+    deletePosition(lastElement);
+    return verdict;
 }
 
 void deleteAfter(List* list, Position* position)
@@ -77,21 +82,19 @@ bool oneElementLoopList(List* list)
 void deleteLoopList(List* list)
 {
     ListElement* position = list->head->next;
-    ListElement* oldHead = list->head;
-    while (position != oldHead)
+    while (position != list->head)
     {
-        free(position);
+        ListElement* copyOfPosition = position;
         position = position->next;
+        free(copyOfPosition);
     }
     free(position);
     free(list);
 }
 
-Position* next(Position* position)
+void next(Position* position)
 {
-    Position* newPosition = malloc(sizeof(Position));
-    newPosition->position = position->position->next;
-    return newPosition;
+    position->position = position->position->next;
 }
 
 int getNumber(Position* position)
@@ -99,8 +102,16 @@ int getNumber(Position* position)
     return position->position->number;
 }
 
-void addAfter(Position* position)
+void addAfter(List* list, Position* position)
 {
+    if (position->position == NULL)
+    {
+        position->position = calloc(1, sizeof(ListElement));
+        position->position->number = 1;
+        position->position->next = position->position;
+        list->head = position->position;
+        return;
+    }
     ListElement* newElement = malloc(sizeof(ListElement));
     newElement->number = position->position->number + 1;
     newElement->next = position->position->next;
