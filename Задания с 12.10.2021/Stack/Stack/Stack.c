@@ -39,6 +39,16 @@ int pop(StackElement** head, bool* correctWorking)
     return value;
 }
 
+int top(StackElement** head, bool* correctWorking)
+{
+    if (head == NULL || *head == NULL)
+    {
+        *correctWorking = false;
+        return 0;
+    }
+    return (*head)->value;
+}
+
 bool isEmpty(StackElement* head)
 {
     return head == NULL;
