@@ -6,11 +6,11 @@
 #include <locale.h>
 #include <string.h>
 
-typedef struct Note
+typedef enum
 {
-    char name[50];
-    char phoneNumber[30];
-}Note;
+    SORT_BY_NAME,
+    SORT_BY_PHONENUMBER
+} Option;
 
 int initializeList(List* phoneBook, const char fileName[])
 {
@@ -55,7 +55,19 @@ int initializeList(List* phoneBook, const char fileName[])
     return notesRead;
 }
 
-void merge(List* list, const int option, const int startPosition, const int middlePosition, const int endPosition)
+int comparePointers(const Position* pointer1, const Position* pointer2, const Option option)
+{
+    if (option == SORT_BY_NAME)
+    {
+        return strcmp(getData(pointer1).name, getData(pointer2).name);
+    }
+    else if (option == SORT_BY_PHONENUMBER)
+    {
+        return strcmp(getData(pointer1).phoneNumber, getData(pointer2).phoneNumber);
+    }
+}
+
+void merge(List* list, const Option option, const int startPosition, const int middlePosition, const int endPosition)
 {
     List* mergedList = createList();
     int leftCursor = startPosition;
@@ -65,64 +77,47 @@ void merge(List* list, const int option, const int startPosition, const int midd
         Position* leftPointer = getPositionByIndex(list, leftCursor);
         Position* rightPointer = getPositionByIndex(list, rightCursor);
         Position* mergedListPointer = getLastElement(mergedList);
-        if (option == 1)
+        int resultOfCompare = 0;
+
+        if (option == SORT_BY_NAME)
         {
-            if (strcmp(getData(leftPointer).name, getData(rightPointer).name) <= 0)
+            resultOfCompare = comparePointers(leftPointer, rightPointer, SORT_BY_NAME);
+        }
+        else if (option == SORT_BY_PHONENUMBER)
+        {
+            resultOfCompare = comparePointers(leftPointer, rightPointer, SORT_BY_PHONENUMBER);
+        }
+
+        if (resultOfCompare <= 0)
+        {
+            if (isEmptyData(mergedListPointer))
             {
-                if (isEmptyData(mergedListPointer))
-                {
-                    addToStart(mergedList, getData(leftPointer));
-                }
-                else
-                {
-                    addAfter(mergedListPointer, getData(leftPointer));
-                }
-                leftCursor++;
+                addToStart(mergedList, getData(leftPointer));
             }
             else
             {
-                if (isEmptyData(mergedListPointer))
-                {
-                    addToStart(mergedList, getData(rightPointer));
-                }
-                else
-                {
-                    addAfter(mergedListPointer, getData(rightPointer));
-                }
-                rightCursor++;
+                addAfter(mergedListPointer, getData(leftPointer));
             }
+            leftCursor++;
         }
-        else if (option == 2)
+        else
         {
-            if (strcmp(getData(leftPointer).phoneNumber, getData(rightPointer).phoneNumber) <= 0)
+            if (isEmptyData(mergedListPointer))
             {
-                if (isEmptyData(mergedListPointer))
-                {
-                    addToStart(mergedList, getData(leftPointer));
-                }
-                else
-                {
-                    addAfter(mergedListPointer, getData(leftPointer));
-                }
-                leftCursor++;
+                addToStart(mergedList, getData(rightPointer));
             }
             else
             {
-                if (isEmptyData(mergedListPointer))
-                {
-                    addToStart(mergedList, getData(rightPointer));
-                }
-                else
-                {
-                    addAfter(mergedListPointer, getData(rightPointer));
-                }
-                rightCursor++;
+                addAfter(mergedListPointer, getData(rightPointer));
             }
+            rightCursor++;
         }
+
         deletePosition(leftPointer);
         deletePosition(rightPointer);
         deletePosition(mergedListPointer);
     }
+
     Position* mergedListPointer = getLastElement(mergedList);
     while (leftCursor <= middlePosition)
     {
@@ -158,7 +153,7 @@ void merge(List* list, const int option, const int startPosition, const int midd
     deleteList(mergedList);
 }
 
-void mergeSort(List* list, const int option, const int startPosition, const int endPosition)
+void mergeSort(List* list, const Option option, const int startPosition, const int endPosition)
 {
     if (endPosition == startPosition)
     {
@@ -193,7 +188,14 @@ int main(void)
         return 1;
     }
 
-    mergeSort(phoneBook, option, 0, length - 1);
+    if (option == 1)
+    {
+        mergeSort(phoneBook, SORT_BY_NAME, 0, length - 1);
+    }
+    else if (option == 2)
+    {
+        mergeSort(phoneBook, SORT_BY_PHONENUMBER, 0, length - 1);
+    }
 
     printf("\n");
     if (option == 1)

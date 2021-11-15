@@ -143,7 +143,6 @@
     <ClCompile Include="PhoneBookList.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="MergeSort.h" />
     <ClInclude Include="PhoneBookList.h" />
   </ItemGroup>
   <ItemGroup>

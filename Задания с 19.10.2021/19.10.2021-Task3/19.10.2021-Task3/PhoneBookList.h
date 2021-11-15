@@ -3,7 +3,11 @@
 #include <stdbool.h>
 
 // Запись в телефонной книге
-typedef struct Note Note;
+typedef struct Note
+{
+    char name[50];
+    char phoneNumber[30];
+}Note;
 
 // Список
 typedef struct List List;

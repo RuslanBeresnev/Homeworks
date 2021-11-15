@@ -26,9 +26,6 @@
     <ClInclude Include="PhoneBookList.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="MergeSort.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Database.txt">

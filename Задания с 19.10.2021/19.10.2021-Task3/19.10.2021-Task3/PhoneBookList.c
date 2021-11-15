@@ -5,12 +5,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct Note
-{
-    char name[50];
-    char phoneNumber[30];
-}Note;
-
 typedef struct ListElement
 {
     Note data;
@@ -82,7 +76,6 @@ Position* next(Position* position)
 {
     if (isLast(position))
     {
-        position->position = NULL;
         return position;
     }
     Position* newPosition = malloc(sizeof(Position));
@@ -112,10 +105,8 @@ void addAfter(Position* position, Note data)
 
 bool deleteElementAfterPosition(Position* position)
 {
-    Position* nextPosition = next(position);
-    if (isLast(position) || nextPosition->position == NULL)
+    if (isLast(position) || position->position->next == NULL)
     {
-        deletePosition(nextPosition);
         return false;
     }
     ListElement* elementForDelete = position->position->next;
