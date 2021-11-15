@@ -146,6 +146,8 @@
     <ClInclude Include="PhoneBookList.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="Correct sorted by name test database.txt" />
+    <Text Include="Correct sorted by phonenumber test database.txt" />
     <Text Include="Database.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

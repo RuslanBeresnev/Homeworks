@@ -98,7 +98,7 @@ List* merge(List* firstHalf, List* secondHalf, const Option option)
 
     while (getLength(firstHalf) != 0 && getLength(secondHalf) != 0)
     {
-        if (comparePointers(firstHalf, secondHalf, option) <= 0)
+        if (comparePointers(firstHalfPointer, secondHalfPointer, option) <= 0)
         {
             shiftFirstElement(firstHalf, &firstHalfPointer, mergedList, &mergedListPointer);
         }
@@ -160,8 +160,58 @@ List* mergeSort(List* list, const Option option)
     return sortedList;
 }
 
+// В тестовых файлах проверки корректности каждой из двух сортировок значения идут в обратном порядке, так как initializeList() считывает их и
+// каждое добавляет в начало списка, а не в конец (перед элементом NULL), как это делает при сортировке mergeSort()
+
+bool sortByNameTestPassed(void)
+{
+    List* phoneBook = createList();
+    initializeList(phoneBook, "Test Database.txt");
+
+    List* correctPhoneBook = createList();
+    initializeList(correctPhoneBook, "Correct sorted by name test database.txt");
+
+    List* sortedPhoneBook = mergeSort(phoneBook, SORT_BY_NAME);
+    const bool verdict = listsAreEqual(sortedPhoneBook, correctPhoneBook);
+
+    deleteList(phoneBook);
+    deleteList(correctPhoneBook);
+    deleteList(sortedPhoneBook);
+
+    return verdict;
+}
+
+bool sortByPhonenumberTestPassed(void)
+{
+    List* phoneBook = createList();
+    initializeList(phoneBook, "Test Database.txt");
+
+    List* correctPhoneBook = createList();
+    initializeList(correctPhoneBook, "Correct sorted by phonenumber test database.txt");
+
+    List* sortedPhoneBook = mergeSort(phoneBook, SORT_BY_PHONENUMBER);
+    const bool verdict = listsAreEqual(sortedPhoneBook, correctPhoneBook);
+
+    deleteList(phoneBook);
+    deleteList(correctPhoneBook);
+    deleteList(sortedPhoneBook);
+
+    return verdict;
+}
+
+bool generalTestPassed(void)
+{
+    return sortByNameTestPassed() && sortByPhonenumberTestPassed();
+}
+
 int main(void)
 {
+    if (!generalTestPassed())
+    {
+        printf("Tests Failed ...\n");
+        return 1;
+    }
+
     setlocale(LC_ALL, "Russian");
     List* phoneBook = createList();
     const int length = initializeList(phoneBook, "Database.txt");

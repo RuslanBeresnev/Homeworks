@@ -31,5 +31,11 @@
     <Text Include="Database.txt">
       <Filter>Исходные файлы</Filter>
     </Text>
+    <Text Include="Correct sorted by name test database.txt">
+      <Filter>Исходные файлы</Filter>
+    </Text>
+    <Text Include="Correct sorted by phonenumber test database.txt">
+      <Filter>Исходные файлы</Filter>
+    </Text>
   </ItemGroup>
 </Project>

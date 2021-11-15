@@ -175,3 +175,30 @@ int getLength(List* list)
 {
     return list->length;
 }
+
+bool listsAreEqual(List* firstList, List* secondList)
+{
+    Position* firstPosition = getFirstElement(firstList);
+    Position* secondPosition = getFirstElement(secondList);
+    bool verdict = true;
+
+    while (!isLast(firstPosition) && !isLast(secondPosition))
+    {
+        Note firstData = getData(firstPosition);
+        Note secondData = getData(secondPosition);
+        if (strcmp(firstData.name, secondData.name) != 0 || strcmp(firstData.phoneNumber, secondData.phoneNumber) != 0)
+        {
+            verdict = false;
+        }
+        next(firstPosition);
+        next(secondPosition);
+    }
+    if (!isLast(firstPosition) || !isLast(secondPosition))
+    {
+        verdict = false;
+    }
+
+    deletePosition(firstPosition);
+    deletePosition(secondPosition);
+    return verdict;
+}

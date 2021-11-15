@@ -65,3 +65,6 @@ bool isEmptyData(Position* position);
 
 // ¬озвращает длину списка
 int getLength(List* list);
+
+// —равнивает два списка (возвращает true, если они равны, иначе false)
+bool listsAreEqual(List* firstList, List* secondList);
