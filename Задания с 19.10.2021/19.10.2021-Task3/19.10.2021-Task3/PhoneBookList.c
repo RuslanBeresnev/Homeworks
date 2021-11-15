@@ -14,6 +14,7 @@ typedef struct ListElement
 typedef struct List
 {
     ListElement* head;
+    int length;
 } List;
 
 typedef struct Position
@@ -65,33 +66,30 @@ Position* getLastElement(List* list)
     }
     while (currentPosition->position->next != NULL)
     {
-        Position* currentPositionCopy = currentPosition;
-        currentPosition = next(currentPosition);
-        deletePosition(currentPositionCopy);
+        next(currentPosition);
     }
     return currentPosition;
 }
 
-Position* next(Position* position)
+void next(Position* position)
 {
     if (isLast(position))
     {
-        return position;
+        return;
     }
-    Position* newPosition = malloc(sizeof(Position));
-    newPosition->position = position->position->next;
-    return newPosition;
+    position->position = position->position->next;
 }
 
-void addToStart(List* list, Note data)
+void addToHead(List* list, Note data)
 {
     ListElement* newElement = calloc(1, sizeof(ListElement));
     newElement->data = data;
     newElement->next = list->head;
     list->head = newElement;
+    list->length++;
 }
 
-void addAfter(Position* position, Note data)
+void addAfter(List* list, Position* position, Note data)
 {
     ListElement* newElement = calloc(1, sizeof(ListElement));
     newElement->data = data;
@@ -101,9 +99,10 @@ void addAfter(Position* position, Note data)
     }
     newElement->next = position->position->next;
     position->position->next = newElement;
+    list->length++;
 }
 
-bool deleteElementAfterPosition(Position* position)
+bool deleteElementAfterPosition(List* list, Position* position)
 {
     if (isLast(position) || position->position->next == NULL)
     {
@@ -112,6 +111,7 @@ bool deleteElementAfterPosition(Position* position)
     ListElement* elementForDelete = position->position->next;
     position->position->next = position->position->next->next;
     free(elementForDelete);
+    list->length--;
     return true;
 }
 
@@ -122,6 +122,7 @@ bool deleteFirstElement(List* list)
         ListElement* firstElement = list->head;
         list->head = list->head->next;
         free(firstElement);
+        list->length--;
         return true;
     }
     return false;
@@ -144,9 +145,7 @@ void printList(List* list)
     {
         Note data = getData(position);
         printf("%s: %s\n", data.name, data.phoneNumber);
-        Position* positionCopy = position;
-        position = next(position);
-        deletePosition(positionCopy);
+        next(position);
     }
     deletePosition(position);
 }
@@ -156,9 +155,7 @@ Position* getPositionByIndex(List* list, int index)
     Position* position = getFirstElement(list);
     for (int i = 0; i < index; i++)
     {
-        Position* positionCopy = position;
-        position = next(position);
-        deletePosition(positionCopy);
+        next(position);
     }
     return position;
 }
@@ -172,4 +169,9 @@ bool isEmptyData(Position* position)
 {
     Note data = getData(position);
     return data.name[0] == '\0' && data.phoneNumber[0] == '\0';
+}
+
+int getLength(List* list)
+{
+    return list->length;
 }

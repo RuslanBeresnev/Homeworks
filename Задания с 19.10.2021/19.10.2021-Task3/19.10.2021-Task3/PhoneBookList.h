@@ -25,10 +25,10 @@ void deleteList(List* list);
 void deletePosition(Position* position);
 
 // Добавление элемента после элемента с данной позицией; применяется ко всем элементам, кроме первого
-void addAfter(Position* position, Note data);
+void addAfter(List* list, Position* position, Note data);
 
 // Добавление элемента в самое начало списка (перед текущим верхним элементом)
-void addToStart(List* list, Note data);
+void addToHead(List* list, Note data);
 
 // Возвращает позицию первого элемента
 Position* getFirstElement(List* list);
@@ -37,13 +37,13 @@ Position* getFirstElement(List* list);
 Position* getLastElement(List* list);
 
 // Возвращает позицию следующего элемента
-Position* next(Position* position);
+void next(Position* position);
 
 // Проверка на последний элемент в списке
 bool isLast(Position* position);
 
 // Удаление элемента списка после данной позиции; применяется ко всем элементам, кроме первого (возвращает true, если удаление произошло, иначе false)
-bool deleteElementAfterPosition(Position* position);
+bool deleteElementAfterPosition(List* list, Position* position);
 
 // Удаление первого элемента списка (возвращает true, если удаление произошло, иначе false)
 bool deleteFirstElement(List* list);
@@ -62,3 +62,6 @@ void setData(Position* position, Note data);
 
 // Проверка на пустой элемент списка
 bool isEmptyData(Position* position);
+
+// Возвращает длину списка
+int getLength(List* list);
