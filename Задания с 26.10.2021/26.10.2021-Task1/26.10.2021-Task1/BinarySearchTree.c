@@ -16,13 +16,13 @@ bool generalTestPassed(void) // Тест не доделан
     {
         values[i] = calloc(2, sizeof(char));
     }
-    *(values[0]) = "a";
-    *(values[1]) = "b";
-    *(values[2]) = "c";
-    *(values[3]) = "d";
-    *(values[4]) = "e";
-    *(values[5]) = "f";
-    *(values[6]) = "g";
+    strcpy(values[0], "a");
+    strcpy(values[1], "b");
+    strcpy(values[2], "c");
+    strcpy(values[3], "d");
+    strcpy(values[4], "e");
+    strcpy(values[5], "f");
+    strcpy(values[6], "g");
 
     addEntryToDictionary(&dictionary, 5, values[0]);
     addEntryToDictionary(&dictionary, 3, values[1]);
