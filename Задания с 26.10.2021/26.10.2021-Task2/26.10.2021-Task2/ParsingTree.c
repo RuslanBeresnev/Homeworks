@@ -193,8 +193,21 @@ void deleteTree(Node* tree)
     free(tree);
 }
 
+bool generalTestPassed(void)
+{
+    Node* firstTree = createTreeFromLine("(* (+ 1 1) 2)");
+    Node* secondTree = createTreeFromLine("(- (* 3 (+ 7 9)) (/ (- 4 14) 5))");
+    return calculateTree(firstTree) == 4 && calculateTree(secondTree) == 50;
+}
+
 int main(void)
 {
+    if (!generalTestPassed())
+    {
+        printf("Tests Failed ...\n");
+        return 1;
+    }
+
     setlocale(LC_ALL, "Russian");
     char treeLine[100] = { 0 };
     readLineFromFile("Tree.txt", treeLine, 100);
