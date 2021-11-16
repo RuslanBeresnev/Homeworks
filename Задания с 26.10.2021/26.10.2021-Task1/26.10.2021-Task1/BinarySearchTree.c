@@ -1,4 +1,4 @@
-﻿#pragma warning (disable: 4090 4715 4996 5045 6031)
+﻿#pragma warning (disable: 4090 4715 4996 5045 6011 6031)
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,45 +11,49 @@ typedef struct Node
     char* value;
     struct Node* leftSon;
     struct Node* rightSon;
-}Node;
+} Node;
 
-void insertNode(Node* tree, const int key, const char* value)
+void insertNode(Node** tree, const int key, const char* value)
 {
-    if (tree->value == NULL)
+    if (*tree == NULL)
     {
-        tree->key = key;
-        tree->value = value;
-        tree->leftSon = calloc(1, sizeof(Node));
-        tree->rightSon = calloc(1, sizeof(Node));
+        *tree = calloc(1, sizeof(Node));
+        (*tree)->key = key;
+        char* oldValue = (*tree)->value;
+        (*tree)->value = value;
+        free(oldValue);
         return;
     }
-    if (key > tree->key)
+
+    if (key > (*tree)->key)
     {
-        insertNode(tree->rightSon, key, value);
+        insertNode(&((*tree)->rightSon), key, value);
     }
-    else if (key < tree->key)
+    else if (key < (*tree)->key)
     {
-        insertNode(tree->leftSon, key, value);
+        insertNode(&((*tree)->leftSon), key, value);
     }
     else
     {
-        tree->value = value;
+        char* oldValue = (*tree)->value;
+        (*tree)->value = value;
+        free(oldValue);
     }
 }
 
 char* getValue(Node* tree, const int key)
 {
-    if (tree->value == NULL)
+    if (tree == NULL)
     {
         return NULL;
     }
     if (key < tree->key)
     {
-        getValue(tree->leftSon, key);
+        return getValue(tree->leftSon, key);
     }
     else if (key > tree->key)
     {
-        getValue(tree->rightSon, key);
+        return getValue(tree->rightSon, key);
     }
     else
     {
@@ -57,76 +61,90 @@ char* getValue(Node* tree, const int key)
     }
 }
 
-void removeNode(Node* tree, const int key)
+bool removeNode(Node** tree, const int key)
 {
-    if (tree->value == NULL)
+    if (*tree == NULL)
     {
-        return;
+        return false;
     }
-    if (key < tree->key)
+    bool successfulRemove = true;
+    if (key < (*tree)->key)
     {
-        removeNode(tree->leftSon, key);
+        successfulRemove = removeNode(&((*tree)->leftSon), key);
     }
-    else if (key > tree->key)
+    else if (key > (*tree)->key)
     {
-        removeNode(tree->rightSon, key);
+        successfulRemove = removeNode(&((*tree)->rightSon), key);
     }
     else
     {
-        if (tree->leftSon->value == NULL && tree->rightSon->value == NULL)
+        if ((*tree)->leftSon == NULL && (*tree)->rightSon == NULL)
         {
-            free(tree->leftSon);
-            free(tree->rightSon);
-            tree->key = 0;
-            tree->value = NULL;
-            tree->leftSon = NULL;
-            tree->rightSon = NULL;
+            free((*tree)->value);
+            free(*tree);
+            *tree = NULL;
         }
-        else if (tree->leftSon->value != NULL && tree->rightSon->value != NULL)
+        else if ((*tree)->leftSon != NULL && (*tree)->rightSon != NULL)
         {
-            if (tree->rightSon->leftSon->value == NULL)
+            if ((*tree)->rightSon->leftSon == NULL)
             {
-                tree->key = tree->rightSon->key;
-                tree->value = tree->rightSon->value;
-                Node* rightSon = tree->rightSon;
-                tree->rightSon = tree->rightSon->rightSon;
-                free(rightSon->leftSon);
+                (*tree)->key = (*tree)->rightSon->key;
+                char* oldValue = (*tree)->value;
+                (*tree)->value = (*tree)->rightSon->value;
+                free(oldValue);
+                Node* rightSon = (*tree)->rightSon;
+                (*tree)->rightSon = (*tree)->rightSon->rightSon;
                 free(rightSon);
             }
             else
             {
-                Node* replacementNode = tree->rightSon;
-                while (replacementNode->leftSon->value != NULL)
+                Node* replacementNode = (*tree)->rightSon;
+                Node* replacementNodeParent = NULL;
+                while (replacementNode->leftSon != NULL)
                 {
+                    if (replacementNode->leftSon->leftSon == NULL)
+                    {
+                        replacementNodeParent = replacementNode;
+                    }
                     replacementNode = replacementNode->leftSon;
                 }
-                tree->key = replacementNode->key;
-                tree->value = replacementNode->value;
-                removeNode(replacementNode, replacementNode->key);
+                (*tree)->key = replacementNode->key;
+                char* oldValue = (*tree)->value;
+                (*tree)->value = replacementNode->value;
+                free(oldValue);
+                removeNode(&replacementNode, replacementNode->key);
+                replacementNodeParent->leftSon = NULL;
             }
         }
         else
         {
-            if (tree->leftSon->value != NULL)
+            if ((*tree)->leftSon != NULL)
             {
-                tree->key = tree->leftSon->key;
-                tree->value = tree->leftSon->value;
-                tree->rightSon = tree->leftSon->rightSon;
-                Node* leftSon = tree->leftSon;
-                tree->leftSon = leftSon->leftSon;
+                (*tree)->key = (*tree)->leftSon->key;
+                char* oldValue = (*tree)->value;
+                (*tree)->value = (*tree)->leftSon->value;
+                free(oldValue);
+                (*tree)->rightSon = (*tree)->leftSon->rightSon;
+                Node* leftSon = (*tree)->leftSon;
+                (*tree)->leftSon = leftSon->leftSon;
+                free(leftSon->value);
                 free(leftSon);
             }
-            else if (tree->rightSon->value != NULL)
+            else if ((*tree)->rightSon != NULL)
             {
-                tree->key = tree->rightSon->key;
-                tree->value = tree->rightSon->value;
-                tree->leftSon = tree->rightSon->leftSon;
-                Node* rightSon = tree->rightSon;
-                tree->rightSon = rightSon->rightSon;
+                (*tree)->key = (*tree)->rightSon->key;
+                char* oldValue = (*tree)->value;
+                (*tree)->value = (*tree)->rightSon->value;
+                free(oldValue);
+                (*tree)->leftSon = (*tree)->rightSon->leftSon;
+                Node* rightSon = (*tree)->rightSon;
+                (*tree)->rightSon = rightSon->rightSon;
+                free(rightSon->value);
                 free(rightSon);
             }
         }
     }
+    return successfulRemove;
 }
 
 bool keyInTree(Node* tree, const int key)
@@ -136,20 +154,28 @@ bool keyInTree(Node* tree, const int key)
 
 void deleteTree(Node* tree)
 {
-    if (tree->value == NULL)
+    if (tree->leftSon == NULL && tree->rightSon == NULL)
     {
+        free(tree->value);
         free(tree);
         return;
     }
-    deleteTree(tree->leftSon);
-    deleteTree(tree->rightSon);
+    if (tree->leftSon != NULL)
+    {
+        deleteTree(tree->leftSon);
+    }
+    if (tree->rightSon != NULL)
+    {
+        deleteTree(tree->rightSon);
+    }
+    free(tree->value);
     free(tree);
 }
 
 int main(void)
 {
     setlocale(LC_ALL, "Russian");
-    Node* tree = calloc(1, sizeof(Node));
+    Node* tree = NULL;
     while(true)
     {
         printf("\n");
@@ -190,9 +216,9 @@ int main(void)
             }
             printf("Введите значение: ");
             char* value = calloc(100, sizeof(char));
-            scanf("%s", value);
+            scanf_s("%s", value, 99);
 
-            insertNode(tree, key, value);
+            insertNode(&tree, key, value);
             printf("Значение добавлено\n");
             break;
         }
@@ -248,8 +274,15 @@ int main(void)
                 return 1;
             }
 
-            removeNode(tree, key);
-            printf("Ключ %d и соответствующее ему значение удалены\n", key);
+            const bool successfulRemove = removeNode(&tree, key);
+            if (successfulRemove)
+            {
+                printf("Ключ %d и соответствующее ему значение удалены\n", key);
+            }
+            else
+            {
+                printf("Ключа %d нет в словаре, поэтому удаление не произошло\n", key);
+            }
             break;
         }
         default:
