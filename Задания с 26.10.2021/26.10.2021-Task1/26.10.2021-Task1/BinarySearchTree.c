@@ -1,181 +1,76 @@
-﻿#pragma warning (disable: 4090 4715 4996 5045 6011 6031)
+﻿#pragma warning (disable: 4996 6011)
+
+#include "Dictionary.h"
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <locale.h>
+#include <string.h>
 
-typedef struct Node
+bool generalTestPassed(void) // Тест не доделан
 {
-    int key;
-    char* value;
-    struct Node* leftSon;
-    struct Node* rightSon;
-} Node;
+    DictionaryNode* dictionary = NULL;
+    
+    char* values[7] = { NULL };
+    for (int i = 0; i < 7; i++)
+    {
+        values[i] = calloc(2, sizeof(char));
+    }
+    *(values[0]) = "a";
+    *(values[1]) = "b";
+    *(values[2]) = "c";
+    *(values[3]) = "d";
+    *(values[4]) = "e";
+    *(values[5]) = "f";
+    *(values[6]) = "g";
 
-void insertNode(Node** tree, const int key, const char* value)
-{
-    if (*tree == NULL)
-    {
-        *tree = calloc(1, sizeof(Node));
-        (*tree)->key = key;
-        char* oldValue = (*tree)->value;
-        (*tree)->value = value;
-        free(oldValue);
-        return;
-    }
+    addEntryToDictionary(&dictionary, 5, values[0]);
+    addEntryToDictionary(&dictionary, 3, values[1]);
+    addEntryToDictionary(&dictionary, 20, values[2]);
+    addEntryToDictionary(&dictionary, 1, values[3]);
+    addEntryToDictionary(&dictionary, 2, values[4]);
+    addEntryToDictionary(&dictionary, 12, values[5]);
+    addEntryToDictionary(&dictionary, 32, values[6]);
 
-    if (key > (*tree)->key)
-    {
-        insertNode(&((*tree)->rightSon), key, value);
-    }
-    else if (key < (*tree)->key)
-    {
-        insertNode(&((*tree)->leftSon), key, value);
-    }
-    else
-    {
-        char* oldValue = (*tree)->value;
-        (*tree)->value = value;
-        free(oldValue);
-    }
-}
-
-char* getValue(Node* tree, const int key)
-{
-    if (tree == NULL)
-    {
-        return NULL;
-    }
-    if (key < tree->key)
-    {
-        return getValue(tree->leftSon, key);
-    }
-    else if (key > tree->key)
-    {
-        return getValue(tree->rightSon, key);
-    }
-    else
-    {
-        return tree->value;
-    }
-}
-
-bool removeNode(Node** tree, const int key)
-{
-    if (*tree == NULL)
+    if (!entryInDictionary(dictionary, 12) || !entryInDictionary(dictionary, 5) || !entryInDictionary(dictionary, 2))
     {
         return false;
     }
-    bool successfulRemove = true;
-    if (key < (*tree)->key)
-    {
-        successfulRemove = removeNode(&((*tree)->leftSon), key);
-    }
-    else if (key > (*tree)->key)
-    {
-        successfulRemove = removeNode(&((*tree)->rightSon), key);
-    }
-    else
-    {
-        if ((*tree)->leftSon == NULL && (*tree)->rightSon == NULL)
-        {
-            free((*tree)->value);
-            free(*tree);
-            *tree = NULL;
-        }
-        else if ((*tree)->leftSon != NULL && (*tree)->rightSon != NULL)
-        {
-            if ((*tree)->rightSon->leftSon == NULL)
-            {
-                (*tree)->key = (*tree)->rightSon->key;
-                char* oldValue = (*tree)->value;
-                (*tree)->value = (*tree)->rightSon->value;
-                free(oldValue);
-                Node* rightSon = (*tree)->rightSon;
-                (*tree)->rightSon = (*tree)->rightSon->rightSon;
-                free(rightSon);
-            }
-            else
-            {
-                Node* replacementNode = (*tree)->rightSon;
-                Node* replacementNodeParent = NULL;
-                while (replacementNode->leftSon != NULL)
-                {
-                    if (replacementNode->leftSon->leftSon == NULL)
-                    {
-                        replacementNodeParent = replacementNode;
-                    }
-                    replacementNode = replacementNode->leftSon;
-                }
-                (*tree)->key = replacementNode->key;
-                char* oldValue = (*tree)->value;
-                (*tree)->value = replacementNode->value;
-                free(oldValue);
-                removeNode(&replacementNode, replacementNode->key);
-                replacementNodeParent->leftSon = NULL;
-            }
-        }
-        else
-        {
-            if ((*tree)->leftSon != NULL)
-            {
-                (*tree)->key = (*tree)->leftSon->key;
-                char* oldValue = (*tree)->value;
-                (*tree)->value = (*tree)->leftSon->value;
-                free(oldValue);
-                (*tree)->rightSon = (*tree)->leftSon->rightSon;
-                Node* leftSon = (*tree)->leftSon;
-                (*tree)->leftSon = leftSon->leftSon;
-                free(leftSon->value);
-                free(leftSon);
-            }
-            else if ((*tree)->rightSon != NULL)
-            {
-                (*tree)->key = (*tree)->rightSon->key;
-                char* oldValue = (*tree)->value;
-                (*tree)->value = (*tree)->rightSon->value;
-                free(oldValue);
-                (*tree)->leftSon = (*tree)->rightSon->leftSon;
-                Node* rightSon = (*tree)->rightSon;
-                (*tree)->rightSon = rightSon->rightSon;
-                free(rightSon->value);
-                free(rightSon);
-            }
-        }
-    }
-    return successfulRemove;
-}
 
-bool keyInTree(Node* tree, const int key)
-{
-    return getValue(tree, key) != NULL;
-}
+    if (strcmp(getValueFromDictionary(dictionary, 5), "a") != 0 || strcmp(getValueFromDictionary(dictionary, 32), "g") != 0
+        || strcmp(getValueFromDictionary(dictionary, 20), "c") != 0)
+    {
+        return false;
+    }
 
-void deleteTree(Node* tree)
-{
-    if (tree->leftSon == NULL && tree->rightSon == NULL)
+    removeEntryFromDictionary(&dictionary, 3);
+    removeEntryFromDictionary(&dictionary, 20);
+    removeEntryFromDictionary(&dictionary, 32);
+
+    if (entryInDictionary(dictionary, 3) || entryInDictionary(dictionary, 20) || entryInDictionary(dictionary, 32))
     {
-        free(tree->value);
-        free(tree);
-        return;
+        return false;
     }
-    if (tree->leftSon != NULL)
+
+    deleteDictionary(dictionary);
+    for (int i = 0; i < 7; i++)
     {
-        deleteTree(tree->leftSon);
+        free(values[i]);
     }
-    if (tree->rightSon != NULL)
-    {
-        deleteTree(tree->rightSon);
-    }
-    free(tree->value);
-    free(tree);
+
+    return true;
 }
 
 int main(void)
 {
+    if (!generalTestPassed())
+    {
+        printf("Tests Failed ...\n");
+        return 1;
+    }
+
     setlocale(LC_ALL, "Russian");
-    Node* tree = NULL;
+    DictionaryNode* dictionary = NULL;
     while(true)
     {
         printf("\n");
@@ -192,7 +87,7 @@ int main(void)
         if (optionInput < 1)
         {
             printf("Введены некорректные данные ...\n");
-            deleteTree(tree);
+            deleteDictionary(dictionary);
             return 1;
         }
 
@@ -200,7 +95,7 @@ int main(void)
         {
         case 0:
         {
-            deleteTree(tree);
+            deleteDictionary(dictionary);
             return 0;
         }
         case 1:
@@ -211,14 +106,14 @@ int main(void)
             if (keyInput < 1)
             {
                 printf("Введены некорректные данные ...\n");
-                deleteTree(tree);
+                deleteDictionary(dictionary);
                 return 1;
             }
             printf("Введите значение: ");
             char* value = calloc(100, sizeof(char));
             scanf_s("%s", value, 99);
 
-            insertNode(&tree, key, value);
+            addEntryToDictionary(&dictionary, key, value);
             printf("Значение добавлено\n");
             break;
         }
@@ -230,11 +125,11 @@ int main(void)
             if (keyInput < 1)
             {
                 printf("Введены некорректные данные ...\n");
-                deleteTree(tree);
+                deleteDictionary(dictionary);
                 return 1;
             }
 
-            const char* value = getValue(tree, key);
+            const char* value = getValueFromDictionary(dictionary, key);
             if (value == NULL)
             {
                 printf("Данного ключа пока нет в словаре\n");
@@ -251,10 +146,10 @@ int main(void)
             if (keyInput < 1)
             {
                 printf("Введены некорректные данные ...\n");
-                deleteTree(tree);
+                deleteDictionary(dictionary);
                 return 1;
             }
-            if (keyInTree(tree, key))
+            if (entryInDictionary(dictionary, key))
             {
                 printf("Ключ содержится в словаре\n");
                 continue;
@@ -270,11 +165,11 @@ int main(void)
             if (keyInput < 1)
             {
                 printf("Введены некорректные данные ...\n");
-                deleteTree(tree);
+                deleteDictionary(dictionary);
                 return 1;
             }
 
-            const bool successfulRemove = removeNode(&tree, key);
+            const bool successfulRemove = removeEntryFromDictionary(&dictionary, key);
             if (successfulRemove)
             {
                 printf("Ключ %d и соответствующее ему значение удалены\n", key);
