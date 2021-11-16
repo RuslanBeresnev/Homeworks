@@ -1,18 +1,17 @@
-#pragma warning (disable: 4090 5045 6011)
+#pragma warning (disable: 4090 4996 5045 6011)
 
 #include "Dictionary.h"
 
 #include <stdlib.h>
+#include <string.h>
 
-void addEntryToDictionary(DictionaryNode** dictionary, const int key, const char* value)
+void addEntryToDictionary(DictionaryNode** dictionary, const int key, const char value[])
 {
     if (*dictionary == NULL)
     {
         *dictionary = calloc(1, sizeof(DictionaryNode));
         (*dictionary)->key = key;
-        char* oldValue = (*dictionary)->value;
-        (*dictionary)->value = value;
-        free(oldValue);
+        strcpy((*dictionary)->value, value);
         return;
     }
 
@@ -26,9 +25,7 @@ void addEntryToDictionary(DictionaryNode** dictionary, const int key, const char
     }
     else
     {
-        char* oldValue = (*dictionary)->value;
-        (*dictionary)->value = value;
-        free(oldValue);
+        strcpy((*dictionary)->value, value);
     }
 }
 
@@ -71,7 +68,6 @@ bool removeEntryFromDictionary(DictionaryNode** dictionary, const int key)
     {
         if ((*dictionary)->leftSon == NULL && (*dictionary)->rightSon == NULL)
         {
-            free((*dictionary)->value);
             free(*dictionary);
             *dictionary = NULL;
         }
@@ -80,9 +76,7 @@ bool removeEntryFromDictionary(DictionaryNode** dictionary, const int key)
             if ((*dictionary)->rightSon->leftSon == NULL)
             {
                 (*dictionary)->key = (*dictionary)->rightSon->key;
-                char* oldValue = (*dictionary)->value;
-                (*dictionary)->value = (*dictionary)->rightSon->value;
-                free(oldValue);
+                strcpy((*dictionary)->value, (*dictionary)->rightSon->value);
                 DictionaryNode* rightSon = (*dictionary)->rightSon;
                 (*dictionary)->rightSon = (*dictionary)->rightSon->rightSon;
                 free(rightSon);
@@ -100,9 +94,7 @@ bool removeEntryFromDictionary(DictionaryNode** dictionary, const int key)
                     replacementNode = replacementNode->leftSon;
                 }
                 (*dictionary)->key = replacementNode->key;
-                char* oldValue = (*dictionary)->value;
-                (*dictionary)->value = replacementNode->value;
-                free(oldValue);
+                strcpy((*dictionary)->value, replacementNode->value);
                 removeEntryFromDictionary(&replacementNode, replacementNode->key);
                 replacementNodeParent->leftSon = NULL;
             }
@@ -112,25 +104,19 @@ bool removeEntryFromDictionary(DictionaryNode** dictionary, const int key)
             if ((*dictionary)->leftSon != NULL)
             {
                 (*dictionary)->key = (*dictionary)->leftSon->key;
-                char* oldValue = (*dictionary)->value;
-                (*dictionary)->value = (*dictionary)->leftSon->value;
-                free(oldValue);
+                strcpy((*dictionary)->value, (*dictionary)->leftSon->value);
                 (*dictionary)->rightSon = (*dictionary)->leftSon->rightSon;
                 DictionaryNode* leftSon = (*dictionary)->leftSon;
                 (*dictionary)->leftSon = leftSon->leftSon;
-                free(leftSon->value);
                 free(leftSon);
             }
             else if ((*dictionary)->rightSon != NULL)
             {
                 (*dictionary)->key = (*dictionary)->rightSon->key;
-                char* oldValue = (*dictionary)->value;
-                (*dictionary)->value = (*dictionary)->rightSon->value;
-                free(oldValue);
+                strcpy((*dictionary)->value, (*dictionary)->rightSon->value);
                 (*dictionary)->leftSon = (*dictionary)->rightSon->leftSon;
                 DictionaryNode* rightSon = (*dictionary)->rightSon;
                 (*dictionary)->rightSon = rightSon->rightSon;
-                free(rightSon->value);
                 free(rightSon);
             }
         }
@@ -145,9 +131,12 @@ bool entryInDictionary(DictionaryNode* dictionary, const int key)
 
 void deleteDictionary(DictionaryNode* dictionary)
 {
+    if (dictionary == NULL)
+    {
+        return;
+    }
     if (dictionary->leftSon == NULL && dictionary->rightSon == NULL)
     {
-        free(dictionary->value);
         free(dictionary);
         return;
     }
@@ -159,6 +148,5 @@ void deleteDictionary(DictionaryNode* dictionary)
     {
         deleteDictionary(dictionary->rightSon);
     }
-    free(dictionary->value);
     free(dictionary);
 }

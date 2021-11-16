@@ -6,13 +6,13 @@
 typedef struct DictionaryNode
 {
     int key;
-    char* value;
+    char value[100];
     struct DictionaryNode* leftSon;
     struct DictionaryNode* rightSon;
 } DictionaryNode;
 
 // Добавить запись в словарь
-void addEntryToDictionary(DictionaryNode** dictionary, const int key, const char* value);
+void addEntryToDictionary(DictionaryNode** dictionary, const int key, const char value[]);
 
 // Получить значение из словаря по ключу
 char* getValueFromDictionary(DictionaryNode* dictionary, const int key);

@@ -7,30 +7,17 @@
 #include <locale.h>
 #include <string.h>
 
-bool generalTestPassed(void) // Тест не доделан
+bool generalTestPassed(void)
 {
     DictionaryNode* dictionary = NULL;
-    
-    char* values[7] = { NULL };
-    for (int i = 0; i < 7; i++)
-    {
-        values[i] = calloc(2, sizeof(char));
-    }
-    strcpy(values[0], "a");
-    strcpy(values[1], "b");
-    strcpy(values[2], "c");
-    strcpy(values[3], "d");
-    strcpy(values[4], "e");
-    strcpy(values[5], "f");
-    strcpy(values[6], "g");
 
-    addEntryToDictionary(&dictionary, 5, values[0]);
-    addEntryToDictionary(&dictionary, 3, values[1]);
-    addEntryToDictionary(&dictionary, 20, values[2]);
-    addEntryToDictionary(&dictionary, 1, values[3]);
-    addEntryToDictionary(&dictionary, 2, values[4]);
-    addEntryToDictionary(&dictionary, 12, values[5]);
-    addEntryToDictionary(&dictionary, 32, values[6]);
+    addEntryToDictionary(&dictionary, 5, "a");
+    addEntryToDictionary(&dictionary, 3, "b");
+    addEntryToDictionary(&dictionary, 20, "c");
+    addEntryToDictionary(&dictionary, 1, "d");
+    addEntryToDictionary(&dictionary, 2, "e");
+    addEntryToDictionary(&dictionary, 12, "f");
+    addEntryToDictionary(&dictionary, 32, "g");
 
     if (!entryInDictionary(dictionary, 12) || !entryInDictionary(dictionary, 5) || !entryInDictionary(dictionary, 2))
     {
@@ -53,10 +40,6 @@ bool generalTestPassed(void) // Тест не доделан
     }
 
     deleteDictionary(dictionary);
-    for (int i = 0; i < 7; i++)
-    {
-        free(values[i]);
-    }
 
     return true;
 }
@@ -110,7 +93,7 @@ int main(void)
                 return 1;
             }
             printf("Введите значение: ");
-            char* value = calloc(100, sizeof(char));
+            char value[100] = { 0 };
             scanf_s("%s", value, 99);
 
             addEntryToDictionary(&dictionary, key, value);
