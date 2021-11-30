@@ -43,13 +43,20 @@ int main(void)
         addValue(wordsFrequences, allWords[i]);
     }
     printf("Частоты всех слов из файла:\n");
-    for (int i = 0; i < 1000; i++)
+    for (int i = 0; i < 100; i++)
     {
-        if (allWords[i] == NULL)
+        List* currentList = getSegmentByIndex(wordsFrequences, i);
+        if (currentList == NULL)
         {
-            break;
+            continue;
         }
-        printf("%s: %d\n", allWords[i], getValueFrequency(wordsFrequences, allWords[i]));
+        Position* position = first(currentList);
+        while (!last(position))
+        {
+            printf("%s: %d\n", getValue(position), getElementFrequency(position));
+            next(position);
+        }
+        deletePosition(position);
     }
 
     printf("\n");

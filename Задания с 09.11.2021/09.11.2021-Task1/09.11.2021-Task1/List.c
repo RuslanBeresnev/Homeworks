@@ -74,6 +74,7 @@ void addToFront(List* list, char* value)
 {
     ListElement* newElement = calloc(1, sizeof(ListElement));
     newElement->value = value;
+    newElement->frequency = 1;
     newElement->next = list->head;
     list->head = newElement;
 }
@@ -86,6 +87,7 @@ void addAfter(Position* position, char* value)
     }
     ListElement* newElement = calloc(1, sizeof(ListElement));
     newElement->value = value;
+    newElement->frequency = 1;
     newElement->next = position->position->next;
     position->position->next = newElement;
 }

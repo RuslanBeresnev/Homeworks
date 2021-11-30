@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 typedef struct HashTable
 {
@@ -13,11 +14,15 @@ HashTable* createHashTable(void)
     return calloc(1, sizeof(HashTable));
 }
 
-int hash(char* value) // Поменять на полиномиальную
+int hash(char* value)
 {
     int result = 0;
-    for (int i = 0; value[i] != '\0'; i++)
-        result += (int)value[i];
+    const int length = strlen(value);
+    const int simpleNumber = 5;
+    for (int i = 0; i < length; i++)
+    {
+        result += (int)((int)value[i] * pow(simpleNumber, length - i - 1));
+    }
     return result;
 }
 
@@ -126,4 +131,9 @@ float getAverageSegmentLength(HashTable* hashTable)
         segmentsCount++;
     }
     return (float)sumOfLengths / segmentsCount;
+}
+
+List* getSegmentByIndex(HashTable* hashTable, const int index)
+{
+    return hashTable->segments[index];
 }

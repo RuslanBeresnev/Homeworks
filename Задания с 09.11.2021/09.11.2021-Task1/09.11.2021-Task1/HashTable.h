@@ -28,3 +28,6 @@ int getMaxSegmentLength(HashTable* hashTable);
 
 // Получить среднюю длину сегмента в хэш-таблице
 float getAverageSegmentLength(HashTable* hashTable);
+
+// Получить сегмент по индексу
+List* getSegmentByIndex(HashTable* hashTable, const int index);
