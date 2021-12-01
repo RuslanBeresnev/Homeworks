@@ -64,5 +64,5 @@ int main(void)
     printf("Длина максимального сегмента в хэш-таблице: %d\n", getMaxSegmentLength(wordsFrequences));
     printf("Средняя длина сегмента в хэш-таблице: %f\n", getAverageSegmentLength(wordsFrequences));
 
-    free(wordsFrequences);
+    deleteHashTable(wordsFrequences);
 }
