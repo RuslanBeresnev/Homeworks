@@ -1,5 +1,7 @@
 #pragma once
 
+#define SEGMENTS_COUNT 1000
+
 #include "List.h"
 
 // Хэш-таблица

@@ -1,3 +1,5 @@
+#pragma warning (disable: 5045)
+
 #include "HashTable.h"
 
 #include <stdlib.h>
@@ -6,7 +8,7 @@
 
 typedef struct HashTable
 {
-    List* segments[100];
+    List* segments[SEGMENTS_COUNT];
 } HashTable;
 
 HashTable* createHashTable(void)
@@ -17,18 +19,18 @@ HashTable* createHashTable(void)
 int hash(char* value)
 {
     int result = 0;
-    const int length = strlen(value);
-    const int simpleNumber = 5;
+    const int length = (int)strlen(value);
+    const int simpleNumber = 3;
     for (int i = 0; i < length; i++)
     {
-        result += (int)((int)value[i] * pow(simpleNumber, length - i - 1));
+        result += (int)((unsigned char)value[i] * pow(simpleNumber, length - i - 1));
     }
     return result;
 }
 
 void addValue(HashTable* hashTable, char* value)
 {
-    const int segmentIndex = hash(value) % 100;
+    const int segmentIndex = hash(value) % SEGMENTS_COUNT;
     if (hashTable->segments[segmentIndex] == NULL)
     {
         hashTable->segments[segmentIndex] = createList();
@@ -63,7 +65,7 @@ int getValueFrequency(HashTable* hashTable, char* value)
 
 void deleteHashTable(HashTable* hashTable)
 {
-    for (int i = 0; i < 100; i++)
+    for (int i = 0; i < SEGMENTS_COUNT; i++)
     {
         if (hashTable->segments[i] != NULL)
         {
@@ -75,32 +77,23 @@ void deleteHashTable(HashTable* hashTable)
 
 float getFillFactor(HashTable* hashTable)
 {
-    int segmentsCount = 0;
     int valuesCount = 0;
-    for (int i = 0; i < 100; i++)
+    for (int i = 0; i < SEGMENTS_COUNT; i++)
     {
         List* currentList = hashTable->segments[i];
         if (currentList == NULL)
         {
             continue;
         }
-        segmentsCount++;
-
-        Position* position = first(currentList);
-        while (!last(position))
-        {
-            valuesCount++;
-            next(position);
-        }
-        deletePosition(position);
+        valuesCount += getLength(currentList);
     }
-    return (float)valuesCount / segmentsCount;
+    return (float)valuesCount / SEGMENTS_COUNT;
 }
 
 int getMaxSegmentLength(HashTable* hashTable)
 {
     int maxSeqmentLength = 0;
-    for (int i = 0; i < 100; i++)
+    for (int i = 0; i < SEGMENTS_COUNT; i++)
     {
         List* currentList = hashTable->segments[i];
         if (currentList == NULL)
@@ -120,7 +113,7 @@ float getAverageSegmentLength(HashTable* hashTable)
 {
     int sumOfLengths = 0;
     int segmentsCount = 0;
-    for (int i = 0; i < 100; i++)
+    for (int i = 0; i < SEGMENTS_COUNT; i++)
     {
         List* currentList = hashTable->segments[i];
         if (currentList == NULL)

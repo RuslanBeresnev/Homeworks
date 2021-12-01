@@ -1,4 +1,4 @@
-#pragma warning (disable: 6011)
+#pragma warning (disable: 4820 6011)
 
 #include "List.h"
 #include <stdlib.h>

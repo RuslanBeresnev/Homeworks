@@ -1,4 +1,4 @@
-﻿#pragma warning (disable: 4996 6031)
+﻿#pragma warning (disable: 4996 5045 6031)
 
 #include "HashTable.h"
 
@@ -43,7 +43,7 @@ int main(void)
         addValue(wordsFrequences, allWords[i]);
     }
     printf("Частоты всех слов из файла:\n");
-    for (int i = 0; i < 100; i++)
+    for (int i = 0; i < SEGMENTS_COUNT; i++)
     {
         List* currentList = getSegmentByIndex(wordsFrequences, i);
         if (currentList == NULL)
