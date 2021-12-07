@@ -3,13 +3,7 @@
 #include <stdbool.h>
 
 // Вершина двоичного дерева поиска
-typedef struct DictionaryNode
-{
-    int key;
-    char value[100];
-    struct DictionaryNode* leftSon;
-    struct DictionaryNode* rightSon;
-} DictionaryNode;
+typedef struct DictionaryNode DictionaryNode;
 
 // Добавить запись в словарь
 void addEntryToDictionary(DictionaryNode** dictionary, const int key, const char value[]);

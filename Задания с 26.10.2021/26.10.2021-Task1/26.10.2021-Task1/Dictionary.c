@@ -5,13 +5,21 @@
 #include <stdlib.h>
 #include <string.h>
 
+typedef struct DictionaryNode
+{
+    int key;
+    char value[100];
+    struct DictionaryNode* leftSon;
+    struct DictionaryNode* rightSon;
+} DictionaryNode;
+
 void addEntryToDictionary(DictionaryNode** dictionary, const int key, const char value[])
 {
     if (*dictionary == NULL)
     {
         *dictionary = calloc(1, sizeof(DictionaryNode));
         (*dictionary)->key = key;
-        strcpy((*dictionary)->value, value);
+        strcpy_s((*dictionary)->value, 99, value);
         return;
     }
 
@@ -49,6 +57,24 @@ char* getValueFromDictionary(DictionaryNode* dictionary, const int key)
     }
 }
 
+void moveSubTree(DictionaryNode** dictionary)
+{
+    DictionaryNode* replacementNode = (*dictionary)->rightSon;
+    DictionaryNode* replacementNodeParent = NULL;
+    while (replacementNode->leftSon != NULL)
+    {
+        if (replacementNode->leftSon->leftSon == NULL)
+        {
+            replacementNodeParent = replacementNode;
+        }
+        replacementNode = replacementNode->leftSon;
+    }
+    (*dictionary)->key = replacementNode->key;
+    strcpy((*dictionary)->value, replacementNode->value);
+    removeEntryFromDictionary(&replacementNode, replacementNode->key);
+    replacementNodeParent->leftSon = NULL;
+}
+
 bool removeEntryFromDictionary(DictionaryNode** dictionary, const int key)
 {
     if (*dictionary == NULL)
@@ -83,20 +109,7 @@ bool removeEntryFromDictionary(DictionaryNode** dictionary, const int key)
             }
             else
             {
-                DictionaryNode* replacementNode = (*dictionary)->rightSon;
-                DictionaryNode* replacementNodeParent = NULL;
-                while (replacementNode->leftSon != NULL)
-                {
-                    if (replacementNode->leftSon->leftSon == NULL)
-                    {
-                        replacementNodeParent = replacementNode;
-                    }
-                    replacementNode = replacementNode->leftSon;
-                }
-                (*dictionary)->key = replacementNode->key;
-                strcpy((*dictionary)->value, replacementNode->value);
-                removeEntryFromDictionary(&replacementNode, replacementNode->key);
-                replacementNodeParent->leftSon = NULL;
+                moveSubTree(dictionary);
             }
         }
         else
@@ -140,13 +153,8 @@ void deleteDictionary(DictionaryNode* dictionary)
         free(dictionary);
         return;
     }
-    if (dictionary->leftSon != NULL)
-    {
-        deleteDictionary(dictionary->leftSon);
-    }
-    if (dictionary->rightSon != NULL)
-    {
-        deleteDictionary(dictionary->rightSon);
-    }
+
+    deleteDictionary(dictionary->leftSon);
+    deleteDictionary(dictionary->rightSon);
     free(dictionary);
 }

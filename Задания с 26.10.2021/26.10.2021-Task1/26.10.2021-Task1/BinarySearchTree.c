@@ -21,12 +21,14 @@ bool generalTestPassed(void)
 
     if (!entryInDictionary(dictionary, 12) || !entryInDictionary(dictionary, 5) || !entryInDictionary(dictionary, 2))
     {
+        deleteDictionary(dictionary);
         return false;
     }
 
     if (strcmp(getValueFromDictionary(dictionary, 5), "a") != 0 || strcmp(getValueFromDictionary(dictionary, 32), "g") != 0
         || strcmp(getValueFromDictionary(dictionary, 20), "c") != 0)
     {
+        deleteDictionary(dictionary);
         return false;
     }
 
@@ -36,11 +38,11 @@ bool generalTestPassed(void)
 
     if (entryInDictionary(dictionary, 3) || entryInDictionary(dictionary, 20) || entryInDictionary(dictionary, 32))
     {
+        deleteDictionary(dictionary);
         return false;
     }
 
     deleteDictionary(dictionary);
-
     return true;
 }
 
@@ -54,7 +56,7 @@ int main(void)
 
     setlocale(LC_ALL, "Russian");
     DictionaryNode* dictionary = NULL;
-    while(true)
+    while (true)
     {
         printf("\n");
         printf("Выберите одну из операций:\n");
