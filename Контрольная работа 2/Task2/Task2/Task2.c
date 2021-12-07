@@ -1,41 +1,100 @@
-﻿#include <stdio.h>
+﻿#pragma warning (disable: 4996 6387)
+
+#define MATRIX_SIDE 30
+
+#include <stdio.h>
+#include <locale.h>
 
 // Создаёт транзитивное замыкание отношения
-void createTransitiveClosure(const int sourceMatrix[100][100], int destinationMatrix[100][100], const int sourceHeight, const int sourceWidth)
+void createTransitiveClosure(int matrix[MATRIX_SIDE][MATRIX_SIDE], const int side)
 {
-    for (int i = 0; i < sourceHeight; i++)
+    for (int k = 0; k < side; k++)
     {
-        for (int j = 0; j < sourceWidth; j++)
+        for (int i = 0; i < side; i++)
         {
-            for (int k = 0; k < sourceWidth; k++)
+            for (int j = 0; j < side; j++)
             {
-                if (sourceMatrix[i][j] == 1 && sourceMatrix[j][k] == 1)
-                {
-                    destinationMatrix[i][k] = 1;
-                }
+                matrix[i][j] = matrix[i][j] || (matrix[i][k] && matrix[k][j]);
             }
         }
     }
 }
 
 // Считывает матрицу из файла и возвращает длину её стороны
-int readMatrixFromFile(const char fileName[], int matrix[100][100])
+int readMatrixFromFile(const char fileName[], int matrix[MATRIX_SIDE][MATRIX_SIDE])
 {
-    // pass
+    FILE* inputFile = fopen(fileName, "r");
+    if (inputFile == NULL)
+    {
+        fclose(inputFile);
+        return -1;
+    }
+    int linesRead = 0;
+    int count = 0;
+    while (!feof(inputFile))
+    {
+        if (linesRead == 0)
+        {
+            int countInput = fscanf(inputFile, "%d", &count);
+            if (countInput != 1)
+            {
+                fclose(inputFile);
+                return linesRead;
+            }
+        }
+        for (int j = 0; j < count; j++)
+        {
+            int numberInput = fscanf(inputFile, "%d", &matrix[linesRead][j]);
+            if (numberInput != 1)
+            {
+                fclose(inputFile);
+                return linesRead;
+            }
+        }
+        linesRead++;
+    }
+    fclose(inputFile);
+    return count;
 }
 
 // Печатает матрицу в файл
-void printMatrixToFile(const char fileName[], int matrix[100][100])
+int printMatrixToFile(const char fileName[], const int matrix[MATRIX_SIDE][MATRIX_SIDE], const int side)
 {
-    // pass
+    FILE* outputFile = fopen(fileName, "w");
+    if (outputFile == NULL)
+    {
+        fclose(outputFile);
+        return 1;
+    }
+    for (int i = 0; i < side; i++)
+    {
+        for (int j = 0; j < side; j++)
+        {
+            fprintf(outputFile, "%d ", matrix[i][j]);
+        }
+        fprintf(outputFile, "\n");
+    }
+    fclose(outputFile);
+    return 0;
 }
 
 int main(void)
 {
-    int sourceMatrix[30][30];
-    int size = readMatrixFromFile("input.txt", sourceMatrix);
+    setlocale(LC_ALL, "Russian");
+    int matrix[MATRIX_SIDE][MATRIX_SIDE];
+    const int side = readMatrixFromFile("input.txt", matrix);
+    if (side < 1)
+    {
+        printf("В файле содержатся некорректные данные или файл пуст ...\n");
+        return 1;
+    }
 
-    int transitiveClosureMatrix[30][30];
-    createTransitiveClosure(sourceMatrix, transitiveClosureMatrix, size, size);
-    printMatrixToFile("output.txt", transitiveClosureMatrix);
+    createTransitiveClosure(matrix, side);
+    const int errorCode = printMatrixToFile("output.txt", matrix, side);
+    if (errorCode != 0)
+    {
+        printf("Что-то пошло не так, и матрица не была распечатана ...\n");
+        return 1;
+    }
+    printf("Матрица транзитивного замыкания успешно напечатана в выходной файл\n");
 }
