@@ -34,13 +34,13 @@ DictionaryNode* rotateRight(DictionaryNode* a)
 DictionaryNode* bigRotateLeft(DictionaryNode* a)
 {
     a->rightSon = rotateRight(a->rightSon);
-    a = rotateLeft(a);
+    return rotateLeft(a);
 }
 
 DictionaryNode* bigRotateRight(DictionaryNode* a)
 {
     a->leftSon = rotateLeft(a->leftSon);
-    a = rotateRight(a);
+    return rotateRight(a);
 }
 
 void addEntryToDictionary(DictionaryNode** dictionary, const int key, const char value[])
