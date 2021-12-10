@@ -7,8 +7,9 @@
 
 typedef struct DictionaryNode
 {
-    int key;
+    char* key;
     char value[100];
+    int height;
     struct DictionaryNode* leftSon;
     struct DictionaryNode* rightSon;
 } DictionaryNode;
@@ -43,41 +44,104 @@ DictionaryNode* bigRotateRight(DictionaryNode* a)
     return rotateRight(a);
 }
 
-void addEntryToDictionary(DictionaryNode** dictionary, const int key, const char value[])
+int getHeight(DictionaryNode* dictionary)
 {
-    if (*dictionary == NULL)
-    {
-        *dictionary = calloc(1, sizeof(DictionaryNode));
-        (*dictionary)->key = key;
-        strcpy_s((*dictionary)->value, 99, value);
-        return;
-    }
+    return dictionary->height;
+}
 
-    if (key > (*dictionary)->key)
+int recalculateHeight(DictionaryNode* dictionary)
+{
+    if (dictionary->leftSon == NULL && dictionary->rightSon == NULL)
     {
-        addEntryToDictionary(&((*dictionary)->rightSon), key, value);
+        return 0;
     }
-    else if (key < (*dictionary)->key)
+    int leftHeight = 0;
+    int rightHeight = 0;
+    if (dictionary->leftSon != NULL)
     {
-        addEntryToDictionary(&((*dictionary)->leftSon), key, value);
+        leftHeight = recalculateHeight(dictionary->leftSon);
+    }
+    if (dictionary->rightSon != NULL)
+    {
+        rightHeight = recalculateHeight(dictionary->rightSon);
+    }
+    int maxHeight = 0;
+    if (leftHeight >= rightHeight)
+    {
+        maxHeight = leftHeight + 1;
     }
     else
     {
-        strcpy((*dictionary)->value, value);
+        maxHeight = rightHeight + 1;
     }
+    return maxHeight;
 }
 
-char* getValueFromDictionary(DictionaryNode* dictionary, const int key)
+int calculateDifference(DictionaryNode* dictionary)
+{
+    return getHeight(dictionary->rightSon) - getHeight(dictionary->leftSon);
+}
+
+DictionaryNode* balance(DictionaryNode* dictionary)
+{
+    if (calculateDifference(dictionary) == 2)
+    {
+        if (calculateDifference(dictionary->rightSon) >= 0)
+        {
+            return rotateLeft(dictionary);
+        }
+        return bigRotateLeft(dictionary);
+    }
+    else if (calculateDifference(dictionary) == -2)
+    {
+        if (calculateDifference(dictionary->leftSon) <= 0)
+        {
+            return rotateRight(dictionary);
+        }
+        return bigRotateRight(dictionary);
+    }
+    return dictionary;
+}
+
+DictionaryNode* addEntryToDictionary(DictionaryNode* dictionary, const char* key, const char* value)
+{
+    if (dictionary == NULL)
+    {
+        DictionaryNode* newEntry = calloc(1, sizeof(DictionaryNode));
+        strcpy_s(newEntry->key, 99, key);
+        strcpy_s(newEntry->value, 99, value);
+        return newEntry;
+    }
+
+    if (strcmp(key, dictionary->key) > 0)
+    {
+        dictionary->rightSon = addEntryToDictionary(dictionary->rightSon, key, value);
+    }
+    else if (strcmp(key, dictionary->key) < 0)
+    {
+        dictionary->leftSon = addEntryToDictionary(dictionary->leftSon, key, value);
+    }
+    else
+    {
+        strcpy_s(dictionary->value, value, 99);
+        return dictionary;
+    }
+
+    dictionary->height = recalculateHeight(dictionary);
+    return balance(dictionary);
+}
+
+char* getValueFromDictionary(DictionaryNode* dictionary, const char* key)
 {
     if (dictionary == NULL)
     {
         return NULL;
     }
-    if (key < dictionary->key)
+    if (strcmp(key, dictionary->key) < 0)
     {
         return getValueFromDictionary(dictionary->leftSon, key);
     }
-    else if (key > dictionary->key)
+    else if (strcmp(key, dictionary->key) > 0)
     {
         return getValueFromDictionary(dictionary->rightSon, key);
     }
@@ -87,9 +151,9 @@ char* getValueFromDictionary(DictionaryNode* dictionary, const int key)
     }
 }
 
-void moveSubTree(DictionaryNode** dictionary)
+DictionaryNode* moveSubTree(DictionaryNode* dictionary, bool* entryRemoved)
 {
-    DictionaryNode* replacementNode = (*dictionary)->rightSon;
+    DictionaryNode* replacementNode = dictionary->rightSon;
     DictionaryNode* replacementNodeParent = NULL;
     while (replacementNode->leftSon != NULL)
     {
@@ -99,75 +163,87 @@ void moveSubTree(DictionaryNode** dictionary)
         }
         replacementNode = replacementNode->leftSon;
     }
-    (*dictionary)->key = replacementNode->key;
-    strcpy((*dictionary)->value, replacementNode->value);
-    removeEntryFromDictionary(&replacementNode, replacementNode->key);
+    strcpy(dictionary->key, replacementNode->key);
+    strcpy(dictionary->value, replacementNode->value);
+    dictionary = removeEntryFromDictionary(replacementNode, replacementNode->key, entryRemoved);
     replacementNodeParent->leftSon = NULL;
+    return dictionary;
 }
 
-bool removeEntryFromDictionary(DictionaryNode** dictionary, const int key)
+DictionaryNode* removeEntryFromDictionary(DictionaryNode* dictionary, const char* key, bool* entryRemoved)
 {
-    if (*dictionary == NULL)
+    if (dictionary == NULL)
     {
-        return false;
+        *entryRemoved = false;
+        return NULL;
     }
     bool successfulRemove = true;
-    if (key < (*dictionary)->key)
+    if (strcmp(key, dictionary->key) < 0)
     {
-        successfulRemove = removeEntryFromDictionary(&((*dictionary)->leftSon), key);
+        dictionary->leftSon = removeEntryFromDictionary(dictionary->leftSon, key, &successfulRemove);
     }
-    else if (key > (*dictionary)->key)
+    else if (strcmp(key, dictionary->key) > 0)
     {
-        successfulRemove = removeEntryFromDictionary(&((*dictionary)->rightSon), key);
+        dictionary->rightSon = removeEntryFromDictionary(dictionary->rightSon, key, &successfulRemove);
     }
     else
     {
-        if ((*dictionary)->leftSon == NULL && (*dictionary)->rightSon == NULL)
+        if (dictionary->leftSon == NULL && dictionary->rightSon == NULL)
         {
-            free(*dictionary);
-            *dictionary = NULL;
+            free(dictionary);
+            *entryRemoved = true;
+            return NULL;
         }
-        else if ((*dictionary)->leftSon != NULL && (*dictionary)->rightSon != NULL)
+        else if (dictionary->leftSon != NULL && dictionary->rightSon != NULL)
         {
-            if ((*dictionary)->rightSon->leftSon == NULL)
+            if (dictionary->rightSon->leftSon == NULL)
             {
-                (*dictionary)->key = (*dictionary)->rightSon->key;
-                strcpy((*dictionary)->value, (*dictionary)->rightSon->value);
-                DictionaryNode* rightSon = (*dictionary)->rightSon;
-                (*dictionary)->rightSon = (*dictionary)->rightSon->rightSon;
+                DictionaryNode* rightSon = dictionary->rightSon;
+                strcpy(dictionary->key, rightSon->key);
+                strcpy(dictionary->value, rightSon->value);
+                dictionary->rightSon = dictionary->rightSon->rightSon;
+
+                free(rightSon->key);
                 free(rightSon);
             }
             else
             {
-                moveSubTree(dictionary);
+                dictionary = moveSubTree(dictionary, entryRemoved);
             }
         }
         else
         {
-            if ((*dictionary)->leftSon != NULL)
+            if (dictionary->leftSon != NULL)
             {
-                (*dictionary)->key = (*dictionary)->leftSon->key;
-                strcpy((*dictionary)->value, (*dictionary)->leftSon->value);
-                (*dictionary)->rightSon = (*dictionary)->leftSon->rightSon;
-                DictionaryNode* leftSon = (*dictionary)->leftSon;
-                (*dictionary)->leftSon = leftSon->leftSon;
+                strcpy(dictionary->key, dictionary->leftSon->key);
+                strcpy(dictionary->value, dictionary->leftSon->value);
+                dictionary->rightSon = dictionary->leftSon->rightSon;
+                DictionaryNode* leftSon = dictionary->leftSon;
+                dictionary->leftSon = leftSon->leftSon;
+
+                free(leftSon->key);
                 free(leftSon);
             }
-            else if ((*dictionary)->rightSon != NULL)
+            else if (dictionary->rightSon != NULL)
             {
-                (*dictionary)->key = (*dictionary)->rightSon->key;
-                strcpy((*dictionary)->value, (*dictionary)->rightSon->value);
-                (*dictionary)->leftSon = (*dictionary)->rightSon->leftSon;
-                DictionaryNode* rightSon = (*dictionary)->rightSon;
-                (*dictionary)->rightSon = rightSon->rightSon;
+                strcpy(dictionary->key, dictionary->rightSon->key);
+                strcpy(dictionary->value, dictionary->rightSon->value);
+                dictionary->leftSon = dictionary->rightSon->leftSon;
+                DictionaryNode* rightSon = dictionary->rightSon;
+                dictionary->rightSon = rightSon->rightSon;
+
+                free(rightSon->key);
                 free(rightSon);
             }
         }
     }
-    return successfulRemove;
+
+    *entryRemoved = true;
+    dictionary->height = recalculateHeight(dictionary);
+    return balance(dictionary);
 }
 
-bool entryInDictionary(DictionaryNode* dictionary, const int key)
+bool entryInDictionary(DictionaryNode* dictionary, const char* key)
 {
     return getValueFromDictionary(dictionary, key) != NULL;
 }
@@ -178,13 +254,9 @@ void deleteDictionary(DictionaryNode* dictionary)
     {
         return;
     }
-    if (dictionary->leftSon == NULL && dictionary->rightSon == NULL)
-    {
-        free(dictionary);
-        return;
-    }
 
     deleteDictionary(dictionary->leftSon);
     deleteDictionary(dictionary->rightSon);
+    free(dictionary->key);
     free(dictionary);
 }

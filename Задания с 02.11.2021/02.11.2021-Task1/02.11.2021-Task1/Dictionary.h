@@ -6,16 +6,40 @@
 typedef struct DictionaryNode DictionaryNode;
 
 // Добавить запись в словарь
-void addEntryToDictionary(DictionaryNode** dictionary, const int key, const char value[]);
+DictionaryNode* addEntryToDictionary(DictionaryNode* dictionary, const char* key, const char* value);
 
 // Получить значение по ключу
-char* getValueFromDictionary(DictionaryNode* dictionary, const int key);
+char* getValueFromDictionary(DictionaryNode* dictionary, const char* key);
 
 // Удалить запись из словаря
-bool removeEntryFromDictionary(DictionaryNode** dictionary, const int key);
+DictionaryNode* removeEntryFromDictionary(DictionaryNode* dictionary, const char* key, bool* entryRemoved);
 
 // Проверить нахождение ключа в словаре
-bool entryInDictionary(DictionaryNode* dictionary, const int key);
+bool entryInDictionary(DictionaryNode* dictionary, const char* key);
 
 // Удалить словарь
 void deleteDictionary(DictionaryNode* dictionary);
+
+// Малый левый поворот
+DictionaryNode* rotateLeft(DictionaryNode* a);
+
+// Малый правый поворот
+DictionaryNode* rotateRight(DictionaryNode* a);
+
+// Большой левый поворот
+DictionaryNode* bigRotateLeft(DictionaryNode* a);
+
+// Большой правый поворот
+DictionaryNode* bigRotateRight(DictionaryNode* a);
+
+// Получить высоту дерева
+int getHeight(DictionaryNode* dictionary);
+
+// Пересчитать высоту дерева
+int recalculateHeight(DictionaryNode* dictionary);
+
+// Посчитать разницу между высотой правого поддерева и высотой левого поддерева
+int calculateDifference(DictionaryNode* dictionary);
+
+// Балансировка дерева
+DictionaryNode* balance(DictionaryNode* dictionary);
