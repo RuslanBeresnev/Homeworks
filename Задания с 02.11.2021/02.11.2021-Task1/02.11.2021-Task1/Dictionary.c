@@ -1,4 +1,4 @@
-#pragma warning (disable: 4090 4996 5045 6011)
+#pragma warning (disable: 4090 4820 4996 5045 6011 6387)
 
 #include "Dictionary.h"
 
@@ -8,7 +8,7 @@
 typedef struct DictionaryNode
 {
     char* key;
-    char value[100];
+    char* value;
     int height;
     struct DictionaryNode* leftSon;
     struct DictionaryNode* rightSon;
@@ -46,10 +46,14 @@ DictionaryNode* bigRotateRight(DictionaryNode* a)
 
 int getHeight(DictionaryNode* dictionary)
 {
+    if (dictionary == NULL)
+    {
+        return -1;
+    }
     return dictionary->height;
 }
 
-int recalculateHeight(DictionaryNode* dictionary)
+int calculateHeight(DictionaryNode* dictionary)
 {
     if (dictionary->leftSon == NULL && dictionary->rightSon == NULL)
     {
@@ -59,11 +63,11 @@ int recalculateHeight(DictionaryNode* dictionary)
     int rightHeight = 0;
     if (dictionary->leftSon != NULL)
     {
-        leftHeight = recalculateHeight(dictionary->leftSon);
+        leftHeight = calculateHeight(dictionary->leftSon);
     }
     if (dictionary->rightSon != NULL)
     {
-        rightHeight = recalculateHeight(dictionary->rightSon);
+        rightHeight = calculateHeight(dictionary->rightSon);
     }
     int maxHeight = 0;
     if (leftHeight >= rightHeight)
@@ -80,6 +84,18 @@ int recalculateHeight(DictionaryNode* dictionary)
 int calculateDifference(DictionaryNode* dictionary)
 {
     return getHeight(dictionary->rightSon) - getHeight(dictionary->leftSon);
+}
+
+void correctHeightsInTree(DictionaryNode* dictionary)
+{
+    if (dictionary == NULL)
+    {
+        return;
+    }
+
+    correctHeightsInTree(dictionary->leftSon);
+    correctHeightsInTree(dictionary->rightSon);
+    dictionary->height = calculateHeight(dictionary);
 }
 
 DictionaryNode* balance(DictionaryNode* dictionary)
@@ -108,6 +124,8 @@ DictionaryNode* addEntryToDictionary(DictionaryNode* dictionary, const char* key
     if (dictionary == NULL)
     {
         DictionaryNode* newEntry = calloc(1, sizeof(DictionaryNode));
+        newEntry->key = calloc(100, sizeof(char));
+        newEntry->value = calloc(100, sizeof(char));
         strcpy_s(newEntry->key, 99, key);
         strcpy_s(newEntry->value, 99, value);
         return newEntry;
@@ -123,12 +141,14 @@ DictionaryNode* addEntryToDictionary(DictionaryNode* dictionary, const char* key
     }
     else
     {
-        strcpy_s(dictionary->value, value, 99);
+        strcpy_s(dictionary->value, 99, value);
         return dictionary;
     }
 
-    dictionary->height = recalculateHeight(dictionary);
-    return balance(dictionary);
+    correctHeightsInTree(dictionary);
+    dictionary = balance(dictionary);
+    correctHeightsInTree(dictionary);
+    return dictionary;
 }
 
 char* getValueFromDictionary(DictionaryNode* dictionary, const char* key)
@@ -177,21 +197,22 @@ DictionaryNode* removeEntryFromDictionary(DictionaryNode* dictionary, const char
         *entryRemoved = false;
         return NULL;
     }
-    bool successfulRemove = true;
     if (strcmp(key, dictionary->key) < 0)
     {
-        dictionary->leftSon = removeEntryFromDictionary(dictionary->leftSon, key, &successfulRemove);
+        dictionary->leftSon = removeEntryFromDictionary(dictionary->leftSon, key, entryRemoved);
     }
     else if (strcmp(key, dictionary->key) > 0)
     {
-        dictionary->rightSon = removeEntryFromDictionary(dictionary->rightSon, key, &successfulRemove);
+        dictionary->rightSon = removeEntryFromDictionary(dictionary->rightSon, key, entryRemoved);
     }
     else
     {
+        *entryRemoved = true;
         if (dictionary->leftSon == NULL && dictionary->rightSon == NULL)
         {
+            free(dictionary->key);
+            free(dictionary->value);
             free(dictionary);
-            *entryRemoved = true;
             return NULL;
         }
         else if (dictionary->leftSon != NULL && dictionary->rightSon != NULL)
@@ -204,6 +225,7 @@ DictionaryNode* removeEntryFromDictionary(DictionaryNode* dictionary, const char
                 dictionary->rightSon = dictionary->rightSon->rightSon;
 
                 free(rightSon->key);
+                free(rightSon->value);
                 free(rightSon);
             }
             else
@@ -222,6 +244,7 @@ DictionaryNode* removeEntryFromDictionary(DictionaryNode* dictionary, const char
                 dictionary->leftSon = leftSon->leftSon;
 
                 free(leftSon->key);
+                free(leftSon->value);
                 free(leftSon);
             }
             else if (dictionary->rightSon != NULL)
@@ -233,14 +256,16 @@ DictionaryNode* removeEntryFromDictionary(DictionaryNode* dictionary, const char
                 dictionary->rightSon = rightSon->rightSon;
 
                 free(rightSon->key);
+                free(rightSon->value);
                 free(rightSon);
             }
         }
     }
 
-    *entryRemoved = true;
-    dictionary->height = recalculateHeight(dictionary);
-    return balance(dictionary);
+    correctHeightsInTree(dictionary);
+    dictionary = balance(dictionary);
+    correctHeightsInTree(dictionary);
+    return dictionary;
 }
 
 bool entryInDictionary(DictionaryNode* dictionary, const char* key)
@@ -257,6 +282,8 @@ void deleteDictionary(DictionaryNode* dictionary)
 
     deleteDictionary(dictionary->leftSon);
     deleteDictionary(dictionary->rightSon);
+
     free(dictionary->key);
+    free(dictionary->value);
     free(dictionary);
 }

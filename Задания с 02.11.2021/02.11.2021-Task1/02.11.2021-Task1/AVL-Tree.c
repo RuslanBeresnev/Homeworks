@@ -1,4 +1,4 @@
-﻿#pragma warning (disable: 4996 6011)
+﻿#pragma warning (disable: 4996 5045 6011 6387)
 
 #include "Dictionary.h"
 
@@ -6,57 +6,203 @@
 #include <stdlib.h>
 #include <locale.h>
 #include <string.h>
+#include <math.h>
 
+DictionaryNode* addStandardValues(DictionaryNode* dictionary, int* entriesCount)
+{
+    char* keyA = calloc(2, sizeof(char));
+    char* keyB = calloc(2, sizeof(char));
+    char* keyC = calloc(2, sizeof(char));
+    char* keyD = calloc(2, sizeof(char));
+    char* keyE = calloc(2, sizeof(char));
+    char* keyF = calloc(2, sizeof(char));
+    char* keyG = calloc(2, sizeof(char));
+    char* keyH = calloc(2, sizeof(char));
+    char* keyI = calloc(2, sizeof(char));
+    char* keyK = calloc(2, sizeof(char));
+    char* keyL = calloc(2, sizeof(char));
+    char* keyM = calloc(2, sizeof(char));
 
-// Переделать старые тесты и добавить новые
+    strcpy(keyA, "a");
+    strcpy(keyB, "b");
+    strcpy(keyC, "c");
+    strcpy(keyD, "d");
+    strcpy(keyE, "e");
+    strcpy(keyF, "f");
+    strcpy(keyG, "g");
+    strcpy(keyH, "h");
+    strcpy(keyI, "i");
+    strcpy(keyK, "k");
+    strcpy(keyL, "l");
+    strcpy(keyM, "m");
 
+    char* valueA = calloc(2, sizeof(char));
+    char* valueB = calloc(2, sizeof(char));
+    char* valueC = calloc(2, sizeof(char));
+    char* valueD = calloc(2, sizeof(char));
+    char* valueE = calloc(2, sizeof(char));
+    char* valueF = calloc(2, sizeof(char));
+    char* valueG = calloc(2, sizeof(char));
+    char* valueH = calloc(2, sizeof(char));
+    char* valueI = calloc(2, sizeof(char));
+    char* valueK = calloc(2, sizeof(char));
+    char* valueL = calloc(2, sizeof(char));
+    char* valueM = calloc(2, sizeof(char));
 
-//bool generalTestPassed(void)
-//{
-//    DictionaryNode* dictionary = NULL;
-//
-//    addEntryToDictionary(&dictionary, 5, "a");
-//    addEntryToDictionary(&dictionary, 3, "b");
-//    addEntryToDictionary(&dictionary, 20, "c");
-//    addEntryToDictionary(&dictionary, 1, "d");
-//    addEntryToDictionary(&dictionary, 2, "e");
-//    addEntryToDictionary(&dictionary, 12, "f");
-//    addEntryToDictionary(&dictionary, 32, "g");
-//
-//    if (!entryInDictionary(dictionary, 12) || !entryInDictionary(dictionary, 5) || !entryInDictionary(dictionary, 2))
-//    {
-//        deleteDictionary(dictionary);
-//        return false;
-//    }
-//
-//    if (strcmp(getValueFromDictionary(dictionary, 5), "a") != 0 || strcmp(getValueFromDictionary(dictionary, 32), "g") != 0
-//        || strcmp(getValueFromDictionary(dictionary, 20), "c") != 0)
-//    {
-//        deleteDictionary(dictionary);
-//        return false;
-//    }
-//
-//    removeEntryFromDictionary(&dictionary, 3);
-//    removeEntryFromDictionary(&dictionary, 20);
-//    removeEntryFromDictionary(&dictionary, 32);
-//
-//    if (entryInDictionary(dictionary, 3) || entryInDictionary(dictionary, 20) || entryInDictionary(dictionary, 32))
-//    {
-//        deleteDictionary(dictionary);
-//        return false;
-//    }
-//
-//    deleteDictionary(dictionary);
-//    return true;
-//}
+    strcpy(valueA, "a");
+    strcpy(valueB, "b");
+    strcpy(valueC, "c");
+    strcpy(valueD, "d");
+    strcpy(valueE, "e");
+    strcpy(valueF, "f");
+    strcpy(valueG, "g");
+    strcpy(valueH, "h");
+    strcpy(valueI, "i");
+    strcpy(valueK, "k");
+    strcpy(valueL, "l");
+    strcpy(valueM, "m");
+
+    dictionary = addEntryToDictionary(dictionary, keyA, valueA);
+    dictionary = addEntryToDictionary(dictionary, keyB, valueB);
+    dictionary = addEntryToDictionary(dictionary, keyC, valueC);
+    dictionary = addEntryToDictionary(dictionary, keyD, valueD);
+    dictionary = addEntryToDictionary(dictionary, keyE, valueE);
+    dictionary = addEntryToDictionary(dictionary, keyF, valueF);
+    dictionary = addEntryToDictionary(dictionary, keyG, valueG);
+    dictionary = addEntryToDictionary(dictionary, keyH, valueH);
+    dictionary = addEntryToDictionary(dictionary, keyI, valueI);
+    dictionary = addEntryToDictionary(dictionary, keyK, valueK);
+    dictionary = addEntryToDictionary(dictionary, keyL, valueL);
+    dictionary = addEntryToDictionary(dictionary, keyM, valueM);
+
+    *entriesCount += 12;
+    return dictionary;
+}
+
+bool dictionaryTestsPassed(void)
+{
+    DictionaryNode* dictionary = NULL;
+    
+    char* keyA = calloc(2, sizeof(char));
+    char* keyB = calloc(2, sizeof(char));
+    char* keyC = calloc(2, sizeof(char));
+    char* keyD = calloc(2, sizeof(char));
+    char* keyE = calloc(2, sizeof(char));
+    char* keyF = calloc(2, sizeof(char));
+    char* keyG = calloc(2, sizeof(char));
+
+    strcpy(keyA, "a");
+    strcpy(keyB, "b");
+    strcpy(keyC, "c");
+    strcpy(keyD, "d");
+    strcpy(keyE, "e");
+    strcpy(keyF, "f");
+    strcpy(keyG, "g");
+
+    char* valueA = calloc(2, sizeof(char));
+    char* valueB = calloc(2, sizeof(char));
+    char* valueC = calloc(2, sizeof(char));
+    char* valueD = calloc(2, sizeof(char));
+    char* valueE = calloc(2, sizeof(char));
+    char* valueF = calloc(2, sizeof(char));
+    char* valueG = calloc(2, sizeof(char));
+
+    strcpy(valueA, "a");
+    strcpy(valueB, "b");
+    strcpy(valueC, "c");
+    strcpy(valueD, "d");
+    strcpy(valueE, "e");
+    strcpy(valueF, "f");
+    strcpy(valueG, "g");
+
+    dictionary = addEntryToDictionary(dictionary, keyA, valueA);
+    dictionary = addEntryToDictionary(dictionary, keyB, valueB);
+    dictionary = addEntryToDictionary(dictionary, keyC, valueC);
+    dictionary = addEntryToDictionary(dictionary, keyD, valueD);
+    dictionary = addEntryToDictionary(dictionary, keyE, valueE);
+    dictionary = addEntryToDictionary(dictionary, keyF, valueF);
+    dictionary = addEntryToDictionary(dictionary, keyG, valueG);
+
+    if (!entryInDictionary(dictionary, keyE) || !entryInDictionary(dictionary, keyG) || !entryInDictionary(dictionary, keyA))
+    {
+        deleteDictionary(dictionary);
+        return false;
+    }
+
+    if (strcmp(getValueFromDictionary(dictionary, keyA), valueA) != 0 || strcmp(getValueFromDictionary(dictionary, keyG), valueG) != 0
+        || strcmp(getValueFromDictionary(dictionary, keyC), valueC) != 0)
+    {
+        deleteDictionary(dictionary);
+        return false;
+    }
+
+    bool successfulRemove = false;
+
+    dictionary = removeEntryFromDictionary(dictionary, keyC, &successfulRemove);
+    if (!successfulRemove)
+    {
+        deleteDictionary(dictionary);
+        return false;
+    }
+
+    dictionary = removeEntryFromDictionary(dictionary, keyF, &successfulRemove);
+    if (!successfulRemove)
+    {
+        deleteDictionary(dictionary);
+        return false;
+    }
+
+    dictionary = removeEntryFromDictionary(dictionary, keyB, &successfulRemove);
+    if (!successfulRemove)
+    {
+        deleteDictionary(dictionary);
+        return false;
+    }
+
+    dictionary = removeEntryFromDictionary(dictionary, keyA, &successfulRemove);
+    if (!successfulRemove)
+    {
+        deleteDictionary(dictionary);
+        return false;
+    }
+
+    successfulRemove = false;
+    char* keyZ = calloc(2, sizeof(char));
+    strcpy(keyZ, "z");
+    dictionary = removeEntryFromDictionary(dictionary, keyZ, &successfulRemove);
+    free(keyZ);
+    if (successfulRemove)
+    {
+        deleteDictionary(dictionary);
+        return false;
+    }
+
+    deleteDictionary(dictionary);
+    return true;
+}
+
+bool AVLTreeTestPassed(void)
+{
+    DictionaryNode* dictionary = NULL;
+    int entriesCount = 0;
+
+    dictionary = addStandardValues(dictionary, &entriesCount);
+
+    return (int)(log(entriesCount) / log(2)) == getHeight(dictionary);
+}
+
+bool generalTestPassed(void)
+{
+    return dictionaryTestsPassed() && AVLTreeTestPassed();
+}
 
 int main(void)
 {
-    //if (!generalTestPassed())
-    //{
-    //    printf("Tests Failed ...\n");
-    //    return 1;
-    //}
+    if (!generalTestPassed())
+    {
+        printf("Tests Failed ...\n");
+        return 1;
+    }
 
     setlocale(LC_ALL, "Russian");
     DictionaryNode* dictionary = NULL;
@@ -100,7 +246,7 @@ int main(void)
                 return 1;
             }
             printf("Введите значение: ");
-            char value[100] = { 0 };
+            char* value = calloc(100, sizeof(char));
             scanf_s("%s", value, 99);
 
             dictionary = addEntryToDictionary(dictionary, key, value);

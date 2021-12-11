@@ -36,10 +36,13 @@ DictionaryNode* bigRotateRight(DictionaryNode* a);
 int getHeight(DictionaryNode* dictionary);
 
 // Пересчитать высоту дерева
-int recalculateHeight(DictionaryNode* dictionary);
+int calculateHeight(DictionaryNode* dictionary);
 
 // Посчитать разницу между высотой правого поддерева и высотой левого поддерева
 int calculateDifference(DictionaryNode* dictionary);
+
+// Пересчитать и исправить значения параметра высоты в каждой вершине
+void correctHeightsInTree(DictionaryNode* dictionary);
 
 // Балансировка дерева
 DictionaryNode* balance(DictionaryNode* dictionary);
