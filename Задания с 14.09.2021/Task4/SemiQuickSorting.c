@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <time.h>
+#include <string.h>
 
 void semiQuickSorting(int array[], int arrayLength)
 {
@@ -48,13 +49,19 @@ bool generalTest()
     return arrayOfThreeElementsCase() && sameElementsCase();
 }
 
-int main()
+int main(int argc, char* argv[])
 {
-    if (!generalTest())
+    if (strcmp(argv[1], "1") == 0)
     {
-        printf("Ohhh ... Tests failed ...\n");
+        if (generalTest())
+        {
+            printf("Tests Passed!\n");
+            return 0;
+        }
+        printf("Tests Failed ...\n");
         return 1;
     }
+
     printf("Enter count of elements in array:\n");
     int count = 0;
     const int input = scanf("%d", &count);
