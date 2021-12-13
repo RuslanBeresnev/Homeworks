@@ -1,5 +1,6 @@
 ﻿#include <stdio.h>
 #include <stdbool.h>
+#include <string.h>
 
 // Рекурсивный алгоритм заметно медленнее итеративного начиная примерно с fib(33)
 
@@ -55,10 +56,15 @@ bool generalTest()
     return standardCasesTest() && edgeCasesTest() && crashCasesTest();
 }
 
-int main()
+int main(int argc, char* argv[])
 {
-    if (!generalTest())
+    if (strcmp(argv[1], "1") == 0)
     {
+        if (generalTest())
+        {
+            printf("Tests Passed!\n");
+            return 0;
+        }
         printf("Tests Failed ...\n");
         return 1;
     }
