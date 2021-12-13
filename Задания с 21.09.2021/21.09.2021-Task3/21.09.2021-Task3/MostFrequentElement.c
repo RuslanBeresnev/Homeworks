@@ -1,6 +1,7 @@
 ﻿#include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <string.h>
 
 #pragma warning (disable: 5045 4996)
 
@@ -111,13 +112,19 @@ bool generalTest(void)
     return standardCase() && oneElementArrayCase() && hugeSpreadOfValuesCase();
 }
 
-int main(void)
+int main(int argc, char* argv[])
 {
-    if (!generalTest())
+    if (strcmp(argv[1], "1") == 0)
     {
+        if (generalTest())
+        {
+            printf("Tests Passed!\n");
+            return 0;
+        }
         printf("Tests Failed ...\n");
         return 1;
     }
+
     printf("Enter count of elements: ");
     int count = 0;
     const int countInput = scanf("%d", &count);
