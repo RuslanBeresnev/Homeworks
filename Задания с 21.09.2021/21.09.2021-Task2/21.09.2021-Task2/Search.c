@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
 #define MAX_RANDOM_VALUE 1000
 
 int partitionFinding(int array[], int startPos, int endPos)
@@ -96,13 +97,19 @@ bool generalTest()
     return standardCase() && oneElementArrayCase();
 }
 
-int main()
+int main(int argc, char* argv[])
 {
-    if (!generalTest())
+    if (strcmp(argv[1], "1") == 0)
     {
+        if (generalTest())
+        {
+            printf("Tests Passed!\n");
+            return 0;
+        }
         printf("Tests Failed ...\n");
         return 1;
     }
+
     srand((unsigned)time(NULL));
     printf("Enter count of numbers in array: ");
     int arrayLength = 0;
