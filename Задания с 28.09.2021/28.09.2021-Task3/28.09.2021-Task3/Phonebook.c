@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <locale.h>
+#include <string.h>
 
 typedef struct
 {
@@ -156,11 +157,16 @@ bool generalTestPassed(void)
     return saveDataTestPassed() && findPhoneNumberTestPassed() && findNameTestPassed() && addNoteTestPassed();
 }
 
-int main(void)
+int main(int argc, char* argv[])
 {
     clearFile("Test Database.txt");
-    if (!generalTestPassed())
+    if (strcmp(argv[1], "1") == 0)
     {
+        if (generalTest())
+        {
+            printf("Tests Passed!\n");
+            return 0;
+        }
         printf("Tests Failed ...\n");
         return 1;
     }
