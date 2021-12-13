@@ -1,6 +1,7 @@
 ﻿#include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 
 // Массив с 100_000 случайными элементами сортируется пузырьком за 30.104 секунды, а сортировкой подсчётом - за 0.003 секунды
 // Таким образом, сортировка подсчётом быстрее сортировки пузырьком в 10_000 раз
@@ -110,13 +111,19 @@ bool generalTest()
     return positiveElementsTest() && negativeElementsTest() && arraysWithLargeScatter();
 }
 
-int main()
+int main(int argc, char* argv[])
 {
-    if (!generalTest())
+    if (strcmp(argv[1], "1") == 0)
     {
+        if (generalTest())
+        {
+            printf("Tests Passed!\n");
+            return 0;
+        }
         printf("Tests Failed ...\n");
         return 1;
     }
+
     int count = 0;
     printf("Enter count of numbers in array:\n");
     const int countInput = scanf("%d", &count);
