@@ -1,5 +1,6 @@
 ﻿#include <stdio.h>
 #include <stdbool.h>
+#include <string.h>
 
 #pragma warning (disable: 5045 4996)
 
@@ -87,13 +88,19 @@ bool generalTest(void)
     return compaireTwoIntArrays(testedNumbersArray, correctNumbersArray, 3);
 }
 
-int main(void)
+int main(int argc, char* argv[])
 {
-    if (!generalTest())
+    if (strcmp(argv[1], "1") == 0)
     {
+        if (generalTest())
+        {
+            printf("Tests Passed!\n");
+            return 0;
+        }
         printf("Tests Failed ...\n");
         return 1;
     }
+
     int numbersArray[100] = { 0 };
     const int numbersCount = readNumbersFromFile("f.txt", numbersArray);
     if (numbersCount == -1)

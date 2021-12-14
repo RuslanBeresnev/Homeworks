@@ -1,5 +1,6 @@
 ﻿#include <stdio.h>
 #include <stdbool.h>
+#include <string.h>
 
 void insertionSort(int array[], int startPos, int endPos)
 {
@@ -125,13 +126,19 @@ bool generalTest()
     return smallArrayCase() && largeArrayCase() && sameElementsCase() && oneElementArray();
 }
 
-int main()
+int main(int argc, char* argv[])
 {
-    if (!generalTest())
+    if (strcmp(argv[1], "1") == 0)
     {
+        if (generalTest())
+        {
+            printf("Tests Passed!\n");
+            return 0;
+        }
         printf("Tests Failed ...\n");
         return 1;
     }
+
     int count = 0;
     printf("Enter count of numbers in array:\n");
     const int countInput = scanf("%d", &count);

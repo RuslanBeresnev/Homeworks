@@ -1,5 +1,6 @@
 ﻿#include <stdio.h>
 #include <stdbool.h>
+#include <string.h>
 
 float binaryExponentiation(int number, int power)
 {
@@ -69,11 +70,16 @@ bool generalTest()
     return numberInNegativePower() && numberInNegativePower() && numberInZeroPower() && zeroInNotPositivePower();
 }
 
-int main()
+int main(int argc, char* argv[])
 {
-    if (!generalTest())
+    if (strcmp(argv[1], "1") == 0)
     {
-        printf("Tests failed ...\n");
+        if (generalTest())
+        {
+            printf("Tests Passed!\n");
+            return 0;
+        }
+        printf("Tests Failed ...\n");
         return 1;
     }
 

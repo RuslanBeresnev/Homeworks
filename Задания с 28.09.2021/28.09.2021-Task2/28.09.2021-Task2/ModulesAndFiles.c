@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "MostFrequentElement.h"
+#include <string.h>
 
 #pragma warning (disable: 4996 5045)
 
@@ -37,10 +38,15 @@ bool generalTestPassed(void)
     return findMostFrequentElement(testedArray, countOfNumbers) == correctResult[0];
 }
 
-int main(void)
+int main(int argc, char* argv[])
 {
-    if (!generalTestPassed())
+    if (strcmp(argv[1], "1") == 0)
     {
+        if (generalTest())
+        {
+            printf("Tests Passed!\n");
+            return 0;
+        }
         printf("Tests Failed ...\n");
         return 1;
     }

@@ -3,6 +3,7 @@
 #include <locale.h>
 #include <stdbool.h>
 #include <math.h>
+#include <string.h>
 
 #define INT_BITS_COUNT (sizeof(int) * 8)
 
@@ -77,13 +78,19 @@ bool generalTest(void)
         testModule(2147483647, 5, -2147483644) && testModule(-2147483647, -2, 2147483647) && testModule(2147483647, 2147483647, -2);
 }
 
-int main(void)
+int main(int argc, char* argv[])
 {
-    if (!generalTest())
+    if (strcmp(argv[1], "1") == 0)
     {
+        if (generalTest())
+        {
+            printf("Tests Passed!\n");
+            return 0;
+        }
         printf("Tests Failed ...\n");
         return 1;
     }
+
     setlocale(LC_ALL, "Russian");
     printf("Введите два числа:\n");
     int firstNumber = 0;
