@@ -70,7 +70,7 @@ bool compaireTwoIntArrays(int arrayOne[], int arrayTwo[], int length)
     return verdict;
 }
 
-bool generalTest(void)
+bool generalTestPassed(void)
 {
     int numbersArray[100] = { 0 };
     const int numbersCount = readNumbersFromFile("f_test.txt", numbersArray);
@@ -92,12 +92,12 @@ int main(int argc, char* argv[])
 {
     if (strcmp(argv[1], "1") == 0)
     {
-        if (generalTest())
+        if (generalTestPassed())
         {
-            printf("Tests Passed!\n");
+            printf("\x1b[32mControlWorkRewrite.sln: Tests Passed!\n\x1b[0m");
             return 0;
         }
-        printf("Tests Failed ...\n");
+        printf("\x1b[31mControlWorkRewrite.sln: Tests Failed ...\n\x1b[0m");
         return 1;
     }
 
