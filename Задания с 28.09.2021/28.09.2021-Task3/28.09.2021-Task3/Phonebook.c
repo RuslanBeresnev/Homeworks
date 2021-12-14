@@ -1,4 +1,4 @@
-﻿#pragma warning (disable: 4996 5045 4668 4710 6031)
+﻿#pragma warning (disable: 4996 5045 4668 4710 6031 4100)
 
 #include <stdio.h>
 #include <string.h>
@@ -162,7 +162,7 @@ int main(int argc, char* argv[])
     clearFile("Test Database.txt");
     if (strcmp(argv[1], "1") == 0)
     {
-        if (generalTest())
+        if (generalTestPassed())
         {
             printf("Tests Passed!\n");
             return 0;
