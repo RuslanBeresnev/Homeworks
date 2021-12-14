@@ -94,13 +94,12 @@ int main(int argc, char* argv[])
     {
         if (generalTestPassed())
         {
-            printf("\x1b[32mControlWorkRewrite.sln: Tests Passed!\n\x1b[0m");
+            printf("ControlWorkRewrite.sln: Tests Passed!\n");
             return 0;
         }
-        printf("\x1b[31mControlWorkRewrite.sln: Tests Failed ...\n\x1b[0m");
+        printf("ControlWorkRewrite.sln: Tests Failed ...\n");
         return 1;
     }
-
     int numbersArray[100] = { 0 };
     const int numbersCount = readNumbersFromFile("f.txt", numbersArray);
     if (numbersCount == -1)
