@@ -1,13 +1,13 @@
-﻿#include <stdio.h>
+﻿#define INT_BITS_COUNT (sizeof(int) * 8)
+
+#pragma warning (disable: 4100 4774 4996 5045)
+
+#include <stdio.h>
 #include <stdlib.h>
 #include <locale.h>
 #include <stdbool.h>
 #include <math.h>
 #include <string.h>
-
-#define INT_BITS_COUNT (sizeof(int) * 8)
-
-#pragma warning (disable: 4774 5045 4996)
 
 void bitwiseAddition(int firstNumber[], int secondNumber[], int resultNumber[])
 {

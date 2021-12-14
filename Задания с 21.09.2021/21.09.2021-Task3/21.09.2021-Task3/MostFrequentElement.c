@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#pragma warning (disable: 5045 4996)
+#pragma warning (disable: 4996 5045)
 
 int numbersArrayInput(int array[], int count)
 {

@@ -2,7 +2,7 @@
 #include <stdbool.h>
 #include <string.h>
 
-#pragma warning (disable: 5045 4996)
+#pragma warning (disable: 4090 4996 5045)
 
 int findSmallerNumbers(const int numbersArray[], const int length, const int maxValue, int resultNumbersArray[])
 {

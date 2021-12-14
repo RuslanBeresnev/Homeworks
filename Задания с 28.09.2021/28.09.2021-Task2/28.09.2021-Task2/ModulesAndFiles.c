@@ -42,7 +42,7 @@ int main(int argc, char* argv[])
 {
     if (strcmp(argv[1], "1") == 0)
     {
-        if (generalTest())
+        if (generalTestPassed())
         {
             printf("Tests Passed!\n");
             return 0;
