@@ -134,10 +134,10 @@ int main(int argc, char* argv[])
     {
         if (generalTest())
         {
-            printf("21.09.2021-Task1: Tests Passed!\n");
+            printf("21.09.2021-Task1.sln: Tests Passed!\n");
             return 0;
         }
-        printf("21.09.2021-Task1: Tests Failed ...\n");
+        printf("21.09.2021-Task1.sln: Tests Failed ...\n");
         return 1;
     }
 
