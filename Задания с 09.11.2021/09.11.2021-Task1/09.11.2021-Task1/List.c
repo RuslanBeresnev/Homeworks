@@ -26,13 +26,6 @@ void deletePosition(Position* position)
     free(position);
 }
 
-Position* copyPosition(Position* position)
-{
-    Position* copyOfPosition = calloc(1, sizeof(Position));
-    copyOfPosition->position = position->position;
-    return copyOfPosition;
-}
-
 List* createList(void)
 {
     return calloc(1, sizeof(List));
@@ -40,6 +33,11 @@ List* createList(void)
 
 void deleteList(List* list)
 {
+    if (list == NULL)
+    {
+        return;
+    }
+
     ListElement* position = list->head;
     while (position != NULL)
     {
@@ -77,45 +75,6 @@ void addToFront(List* list, char* value)
     newElement->frequency = 1;
     newElement->next = list->head;
     list->head = newElement;
-}
-
-void addAfter(Position* position, char* value)
-{
-    if (last(position))
-    {
-        return;
-    }
-    ListElement* newElement = calloc(1, sizeof(ListElement));
-    newElement->value = value;
-    newElement->frequency = 1;
-    newElement->next = position->position->next;
-    position->position->next = newElement;
-}
-
-bool deleteElementAfterPosition(Position* position)
-{
-    if (last(position) || position->position->next == NULL)
-    {
-        return false;
-    }
-    ListElement* elementForDelete = position->position->next;
-    position->position->next = position->position->next->next;
-    free(elementForDelete->value);
-    free(elementForDelete);
-    return true;
-}
-
-bool deleteFirstElement(List* list)
-{
-    if (list->head != NULL)
-    {
-        ListElement* firstElement = list->head;
-        list->head = list->head->next;
-        free(firstElement->value);
-        free(firstElement);
-        return true;
-    }
-    return false;
 }
 
 char* getValue(Position* position)

@@ -1,36 +1,66 @@
-#pragma warning (disable: 5045)
+#pragma warning (disable: 4090 4820 5045 6011)
 
+#include "List.h"
 #include "HashTable.h"
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <math.h>
 
 typedef struct HashTable
 {
-    List* segments[SEGMENTS_COUNT];
+    List** segments;
+    int size;
 } HashTable;
 
-HashTable* createHashTable(void)
+HashTable* createHashTable(const int size)
 {
-    return calloc(1, sizeof(HashTable));
+    HashTable* newHashTable = calloc(1, sizeof(HashTable));
+    newHashTable->segments = calloc(size, sizeof(List*));
+    newHashTable->size = size;
+    return newHashTable;
 }
 
 int hash(char* value)
 {
-    int result = 0;
+    if (value == NULL)
+    {
+        return 0;
+    }
+
+    int result = (unsigned char)value[0];
     const int length = (int)strlen(value);
     const int simpleNumber = 3;
-    for (int i = 0; i < length; i++)
+    for (int i = 1; i < length; i++)
     {
-        result += (int)((unsigned char)value[i] * pow(simpleNumber, length - i - 1));
+        result = abs((int)(result * simpleNumber + (unsigned char)value[i]));
     }
     return result;
 }
 
-void addValue(HashTable* hashTable, char* value)
+float getFillFactor(HashTable* hashTable)
 {
-    const int segmentIndex = hash(value) % SEGMENTS_COUNT;
+    int valuesCount = 0;
+    for (int i = 0; i < hashTable->size; i++)
+    {
+        List* currentList = hashTable->segments[i];
+        if (currentList == NULL)
+        {
+            continue;
+        }
+        valuesCount += getLength(currentList);
+    }
+    return (float)valuesCount / hashTable->size;
+}
+
+void addValue(HashTable* hashTable, const char* value)
+{
+    if (getFillFactor(hashTable) > 1)
+    {
+        resizeHashTable(hashTable, 5);
+    }
+
+    const int segmentIndex = hash(value) % hashTable->size;
     if (hashTable->segments[segmentIndex] == NULL)
     {
         hashTable->segments[segmentIndex] = createList();
@@ -47,53 +77,19 @@ void addValue(HashTable* hashTable, char* value)
     }
 }
 
-int getValueFrequency(HashTable* hashTable, char* value)
-{
-    List* suitableList = hashTable->segments[hash(value)];
-    Position* position = getPositionByValue(suitableList, value);
-    if (position == NULL)
-    {
-        return -1;
-    }
-    else
-    {
-        const int frequency = getElementFrequency(position);
-        deletePosition(position);
-        return frequency;
-    }
-}
-
 void deleteHashTable(HashTable* hashTable)
 {
-    for (int i = 0; i < SEGMENTS_COUNT; i++)
+    for (int i = 0; i < hashTable->size; i++)
     {
-        if (hashTable->segments[i] != NULL)
-        {
-            deleteList(hashTable->segments[i]);
-        }
+        deleteList(hashTable->segments[i]);
     }
     free(hashTable);
 }
 
-float getFillFactor(HashTable* hashTable)
-{
-    int valuesCount = 0;
-    for (int i = 0; i < SEGMENTS_COUNT; i++)
-    {
-        List* currentList = hashTable->segments[i];
-        if (currentList == NULL)
-        {
-            continue;
-        }
-        valuesCount += getLength(currentList);
-    }
-    return (float)valuesCount / SEGMENTS_COUNT;
-}
-
 int getMaxSegmentLength(HashTable* hashTable)
 {
-    int maxSeqmentLength = 0;
-    for (int i = 0; i < SEGMENTS_COUNT; i++)
+    int maxSegmentLength = 0;
+    for (int i = 0; i < hashTable->size; i++)
     {
         List* currentList = hashTable->segments[i];
         if (currentList == NULL)
@@ -101,19 +97,19 @@ int getMaxSegmentLength(HashTable* hashTable)
             continue;
         }
         const int length = getLength(currentList);
-        if (length > maxSeqmentLength)
+        if (length > maxSegmentLength)
         {
-            maxSeqmentLength = length;
+            maxSegmentLength = length;
         }
     }
-    return maxSeqmentLength;
+    return maxSegmentLength;
 }
 
 float getAverageSegmentLength(HashTable* hashTable)
 {
     int sumOfLengths = 0;
     int segmentsCount = 0;
-    for (int i = 0; i < SEGMENTS_COUNT; i++)
+    for (int i = 0; i < hashTable->size; i++)
     {
         List* currentList = hashTable->segments[i];
         if (currentList == NULL)
@@ -126,7 +122,56 @@ float getAverageSegmentLength(HashTable* hashTable)
     return (float)sumOfLengths / segmentsCount;
 }
 
-List* getSegmentByIndex(HashTable* hashTable, const int index)
+void printWordsFrequences(HashTable* hashTable)
 {
-    return hashTable->segments[index];
+    for (int i = 0; i < hashTable->size; i++)
+    {
+        List* currentList = hashTable->segments[i];
+        if (currentList == NULL)
+        {
+            continue;
+        }
+        Position* position = first(currentList);
+        while (!last(position))
+        {
+            printf("%s: %d\n", getValue(position), getElementFrequency(position));
+            next(position);
+        }
+        deletePosition(position);
+    }
+}
+
+void resizeHashTable(HashTable* hashTable, const int scale)
+{
+    HashTable* newHashTable = createHashTable(hashTable->size * scale);
+    
+    for (int i = 0; i < hashTable->size; i++)
+    {
+        List* currentList = hashTable->segments[i];
+
+        if (currentList == NULL)
+        {
+            continue;
+        }
+
+        Position* position = first(currentList);
+        while (!last(position))
+        {
+            addValue(newHashTable, getValue(position));
+            next(position);
+        }
+
+        deletePosition(position);
+        deleteList(currentList);
+    }
+
+    hashTable->segments = newHashTable->segments;
+    hashTable->size = newHashTable->size;
+
+    free(newHashTable);
+}
+
+int getSegmentsCount(HashTable* hashTable)
+{
+    return hashTable->size;
 }

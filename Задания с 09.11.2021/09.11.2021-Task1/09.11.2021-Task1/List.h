@@ -17,12 +17,6 @@ void deleteList(List* list);
 // Удаление позиции
 void deletePosition(Position* position);
 
-// Копирование текущей позиции
-Position* copyPosition(Position* position);
-
-// Добавление элемента после элемента с данной позицией; применяется ко всем элементам, кроме первого
-void addAfter(Position* position, char* value);
-
 // Добавление элемента в самое начало списка (перед текущим верхним элементом)
 void addToFront(List* list, char* value);
 
@@ -40,12 +34,6 @@ char* getValue(Position* position);
 
 // Получение частоты значения
 int getElementFrequency(Position* position);
-
-// Удаление элемента списка после данной позиции; применяется ко всем элементам, кроме первого (возвращает true, если удаление произошло, иначе false)
-bool deleteElementAfterPosition(Position* position);
-
-// Удаление первого элемента списка (возвращает true, если удаление произошло, иначе false)
-bool deleteFirstElement(List* list);
 
 // Проверка на содержание элемента в списке
 bool valueInList(List* list, char* value);
