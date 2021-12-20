@@ -161,6 +161,8 @@ void visitNode(State* currentState, Node* startCity, Node* deepSpanningTree[], i
             }
         }
     }
+
+    free(nearNodes);
 }
 
 Node* getNearestUnoccupiedCity(State* state, Node* startCity, State* states[], const int statesCount)
@@ -172,6 +174,8 @@ Node* getNearestUnoccupiedCity(State* state, Node* startCity, State* states[], c
     Node* nearestCity = NULL;
 
     visitNode(state, startCity, deepSpanningTree, &deepSpanningTreeLength, &minimumDistance, &nearestCity, states, statesCount);
+    free(deepSpanningTree);
+
     return nearestCity;
 }
 
