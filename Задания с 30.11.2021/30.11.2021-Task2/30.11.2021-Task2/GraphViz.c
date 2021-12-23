@@ -1,58 +1,121 @@
-﻿#pragma warning (disable: 4996)
+﻿#pragma warning (disable: 4996 5045 6011 6387)
+
+#define MATRIX_SIDE 100
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
+#include <locale.h>
 
-void createDotFile(const char fileName[], const int matrix[][5], const int width, const int height)
+bool readMatrixFromFile(const char fileName[], int** matrix, int* width, int* height)
+{
+    FILE* inputFile = fopen(fileName, "r");
+    if (inputFile == NULL)
+    {
+        fclose(inputFile);
+        return -1;
+    }
+
+    int heightInput = fscanf(inputFile, "%d", height);
+    if (heightInput != 1)
+    {
+        fclose(inputFile);
+        return false;
+    }
+
+    int widthInput = fscanf(inputFile, "%d", width);
+    if (widthInput != 1)
+    {
+        fclose(inputFile);
+        return false;
+    }
+
+    for (int row = 0; row < *height; row++)
+    {
+        for (int column = 0; column < *width; column++)
+        {
+            int number = 0;
+            int numberInput = fscanf(inputFile, "%d", &number);
+            matrix[row][column] = number;
+            if (numberInput != 1)
+            {
+                fclose(inputFile);
+                return false;
+            }
+        }
+    }
+
+    fclose(inputFile);
+    return true;
+}
+
+void createDotFile(const char fileName[], const int** matrix, const int width, const int height)
 {
     FILE* dotFile = fopen(fileName, "w");
 
-    int ignoredEdges[25][2];
-    for (int i = 0; i < 25; i++)
+    int** ignoredEdges = calloc(MATRIX_SIDE * MATRIX_SIDE, sizeof(int*));
+    for (int i = 0; i < MATRIX_SIDE * MATRIX_SIDE; i++)
     {
-        ignoredEdges[i][0] = 0;
-        ignoredEdges[i][1] = 0;
+        ignoredEdges[i] = calloc(2, sizeof(int));
     }
 
     fprintf(dotFile, "digraph TestGraph {\n");
-    for (int y = 0; y < height; y++)
+    for (int row = 0; row < height; row++)
     {
-        for (int x = 0; x < width; x++)
+        for (int column = 0; column < width; column++)
         {
-            if (ignoredEdges[y][x] == 1)
+            if (ignoredEdges[row][column] == 1)
             {
                 continue;
             }
 
-            if (matrix[y][x] == 1)
+            if (matrix[row][column] == 1)
             {
-                if (matrix[x][y] == 1)
+                if (matrix[column][row] == 1)
                 {
-                    fprintf(dotFile, "%d -> %d [dir=none];\n", y + 1, x + 1);
-                    ignoredEdges[x][y] = 1;
+                    fprintf(dotFile, "%d -> %d [dir=none];\n", row + 1, column + 1);
+                    ignoredEdges[column][row] = 1;
                 }
                 else
                 {
-                    fprintf(dotFile, "%d -> %d;\n", y + 1, x + 1);
+                    fprintf(dotFile, "%d -> %d;\n", row + 1, column + 1);
                 }
             }
         }
     }
     fprintf(dotFile, "}");
 
+    for (int i = 0; i < MATRIX_SIDE * MATRIX_SIDE; i++)
+    {
+        free(ignoredEdges[i]);
+    }
+    free(ignoredEdges);
+
     fclose(dotFile);
 }
 
 int main(void)
 {
-    const int matrix[5][5] = { 
-        {0, 1, 0, 1, 0},
-        {1, 0, 1, 0, 1},
-        {1, 1, 1, 1, 1}, 
-        {0, 0, 0, 0, 0},
-        {1, 1, 0, 0, 1} };
+    setlocale(LC_ALL, "Russian");
 
-    createDotFile("TestGraph.dot", matrix, 5, 5);
+    int** matrix = calloc(MATRIX_SIDE, sizeof(int*));
+    for (int i = 0; i < MATRIX_SIDE; i++)
+    {
+        matrix[i] = calloc(MATRIX_SIDE, sizeof(int));
+    }
+
+    int width = 0;
+    int height = 0;
+    bool successfulMatrixReading = readMatrixFromFile("Matrix.txt", matrix, &width, &height);
+    if (!successfulMatrixReading)
+    {
+        printf("Матрица задана некорректно ...\n");
+        return 1;
+    }
+
+    createDotFile("TestGraph.dot", matrix, width, height);
     system("dot TestGraph.dot -Tpng -o TestGraph.png");
     system("TestGraph.png");
+
+    free(matrix);
 }
