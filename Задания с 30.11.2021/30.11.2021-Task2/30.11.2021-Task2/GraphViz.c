@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 #include <locale.h>
 
 bool readMatrixFromFile(const char fileName[], int** matrix, int* width, int* height)
@@ -111,8 +112,13 @@ int main(void)
         return 1;
     }
 
+    char command[100] = { 0 };
+    command[0] = '"';
+    strcat(command, getenv("GraphViz"));
+    strcat(command, "\" TestGraph.dot -Tpng -o TestGraph.png");
+
     createDotFile("TestGraph.dot", matrix, width, height);
-    system("dot TestGraph.dot -Tpng -o TestGraph.png");
+    system(command);
     system("TestGraph.png");
 
     free(matrix);
