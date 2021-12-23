@@ -34,9 +34,7 @@ bool readMatrixFromFile(const char fileName[], int** matrix, int* width, int* he
     {
         for (int column = 0; column < *width; column++)
         {
-            int number = 0;
-            int numberInput = fscanf(inputFile, "%d", &number);
-            matrix[row][column] = number;
+            int numberInput = fscanf(inputFile, "%d", &matrix[row][column]);
             if (numberInput != 1)
             {
                 fclose(inputFile);
@@ -53,10 +51,10 @@ void createDotFile(const char fileName[], const int** matrix, const int width, c
 {
     FILE* dotFile = fopen(fileName, "w");
 
-    int** ignoredEdges = calloc(MATRIX_SIDE * MATRIX_SIDE, sizeof(int*));
-    for (int i = 0; i < MATRIX_SIDE * MATRIX_SIDE; i++)
+    int** ignoredEdges = calloc(MATRIX_SIDE, sizeof(int*));
+    for (int i = 0; i < MATRIX_SIDE; i++)
     {
-        ignoredEdges[i] = calloc(2, sizeof(int));
+        ignoredEdges[i] = calloc(MATRIX_SIDE, sizeof(int));
     }
 
     fprintf(dotFile, "digraph TestGraph {\n");
@@ -85,7 +83,7 @@ void createDotFile(const char fileName[], const int** matrix, const int width, c
     }
     fprintf(dotFile, "}");
 
-    for (int i = 0; i < MATRIX_SIDE * MATRIX_SIDE; i++)
+    for (int i = 0; i < MATRIX_SIDE; i++)
     {
         free(ignoredEdges[i]);
     }
