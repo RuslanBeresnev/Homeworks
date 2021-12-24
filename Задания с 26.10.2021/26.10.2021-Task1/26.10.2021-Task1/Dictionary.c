@@ -33,7 +33,7 @@ void addEntryToDictionary(DictionaryNode** dictionary, const int key, const char
     }
     else
     {
-        strcpy((*dictionary)->value, value);
+        strcpy_s((*dictionary)->value, 99, value);
     }
 }
 
