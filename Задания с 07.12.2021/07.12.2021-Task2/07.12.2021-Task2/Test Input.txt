@@ -1,0 +1,11 @@
+#pragma warning (disable: 4996) /*disables warnings*/
+
+#include <stdio.h> /**/
+
+int main(void) /*The main function in programm*/
+{
+    // pass
+}
+
+//*comment*/
+/*comment2**/
