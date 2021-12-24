@@ -100,11 +100,7 @@ bool isRealNumber(const char sequence[])
         position++;
     }
 
-    if (state != INTEGER && state != FLOAT && state != EXPONENTIAL_NUMBER)
-    {
-        return false;
-    }
-    return true;
+    return state == INTEGER || state == FLOAT || state == EXPONENTIAL_NUMBER;
 }
 
 bool integerNumberTestPassed(void)
