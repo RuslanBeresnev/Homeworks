@@ -21,7 +21,7 @@ HashTable* createHashTable(const int size)
     return newHashTable;
 }
 
-int hash(char* value)
+int hash(const char* value)
 {
     if (value == NULL)
     {
@@ -70,6 +70,7 @@ void addValue(HashTable* hashTable, const char* value)
         Position* position = getPositionByValue(hashTable->segments[segmentIndex], value);
         setFrequency(position, getElementFrequency(position) + 1);
         deletePosition(position);
+        free(value);
     }
     else
     {
