@@ -2,22 +2,23 @@
 
 #define MAX_STRING_LENGTH 100
 #define MAX_TEXT_LENGTH 10000
+#define PRIME_NUMBER 3
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
-#include <Windows.h>
+#include <locale.h>
+#include <math.h>
 
-int hash(const char string[], const int module)
+int hash(const char string[])
 {
     const int length = (int)strlen(string);
-    const int primeNumber = 3;
     int hash = 0;
 
     for (int i = 0; i < length; i++)
     {
-        hash = (hash * primeNumber + (unsigned char)string[i]) % module;
+        hash = hash * PRIME_NUMBER + (unsigned char)string[i];
     }
 
     return hash;
@@ -31,28 +32,42 @@ void getStringFragment(const char source[], char destination[], const int beginP
     }
 }
 
-int RabinKarpSearch(const char string[], const char substring[])
+bool compareSubstringWithString(const char string[], const char substring[], const int startPos, const int endPos)
 {
-    const int module = 1000;
+    for (int i = startPos; i < endPos + 1; i++)
+    {
+        if (string[i] != substring[i - startPos])
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+int rabinKarpSearch(const char string[], const char substring[])
+{
     const int stringLength = (int)strlen(string);
     const int substringLength = (int)strlen(substring);
 
-    const int substringHash = hash(substring, module);
+    const int substringHash = hash(substring);
 
     char currentString[30] = { 0 };
+    getStringFragment(string, currentString, 0, substringLength - 1);
+    int currentStringHash = hash(currentString);
+
+    const int primeNumberInPower = (int)pow(PRIME_NUMBER, substringLength - 1);
 
     for (int i = 0; i < stringLength - substringLength + 1; i++)
     {
-        getStringFragment(string, currentString, i, i + substringLength - 1);
-        int currentStringHash = hash(currentString, module);
-
         if (currentStringHash == substringHash)
         {
-            if (strcmp(currentString, substring) == 0)
+            if (compareSubstringWithString(string, substring, i, i + substringLength - 1))
             {
                 return i;
             }
         }
+
+        currentStringHash = (currentStringHash - (unsigned char)string[i] * primeNumberInPower) * PRIME_NUMBER + (unsigned char)string[i + 1];
     }
 
     return -1;
@@ -110,16 +125,10 @@ bool generalTestPassed(void)
     char text[MAX_TEXT_LENGTH] = { 0 };
     readTextFromFile("Test Input.txt", text, MAX_TEXT_LENGTH);
 
-    char standardSubstring[MAX_STRING_LENGTH] = "подстроки";
-    const int standardSubstringFirstPosition = RabinKarpSearch(text, standardSubstring);
+    char standardSubstring[MAX_STRING_LENGTH] = "r";
+    const int standardSubstringFirstPosition = rabinKarpSearch(text, standardSubstring);
 
-    char prefixSubstring[MAX_STRING_LENGTH] = "Реализовать";
-    const int prefixSubstringFirstPosition = RabinKarpSearch(text, prefixSubstring);
-
-    char missingSubstring[MAX_STRING_LENGTH] = "RazbeR";
-    const int missingSubstringFirstPosition = RabinKarpSearch(text, missingSubstring);
-
-    return standardSubstringFirstPosition == 18 && prefixSubstringFirstPosition == 0 && missingSubstringFirstPosition == -1;
+    return standardSubstringFirstPosition == 1;
 }
 
 int main(void)
@@ -130,8 +139,7 @@ int main(void)
         return 1;
     }
 
-    SetConsoleCP(1251);
-    SetConsoleOutputCP(1251);
+    setlocale(LC_ALL, "Russian");
 
     char text[MAX_TEXT_LENGTH] = { 0 };
     readTextFromFile("Input.txt", text, MAX_TEXT_LENGTH);
@@ -140,7 +148,7 @@ int main(void)
     char substring[MAX_STRING_LENGTH] = { 0 };
     scanf("%s", substring);
 
-    const int substringFirstPosition = RabinKarpSearch(text, substring);
+    const int substringFirstPosition = rabinKarpSearch(text, substring);
     if (substringFirstPosition == -1)
     {
         printf("Данная подстрока не содержится в тексте ...\n");
